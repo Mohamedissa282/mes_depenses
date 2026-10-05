@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:mes_depenses/color.dart';
 
-class Connexion extends StatelessWidget {
-
-  
+class Connexion extends StatefulWidget {
   const new({super.key});
 
   @override
+  State<Connexion> createState() => _ConnexionState();
+}
+
+class _ConnexionState extends State<Connexion> {
+ 
+  bool _obscurePassword = true;
+  @override
   Widget build(BuildContext context) {
-    return Form(
-      child: Column(
+    return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
@@ -22,11 +26,23 @@ class Connexion extends StatelessWidget {
           ),
           SizedBox(height: 3),
           TextFormField(
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return "Email est obligatoire.";
+              }
+              bool email = RegExp(r"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$")
+                  .hasMatch(value);
+
+              if (!email) {
+                return "email non valide";
+              }
+            },
             decoration: InputDecoration(
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(11),
                 borderSide: BorderSide(color: AppColors.border),
               ),
+              prefixIcon: Icon(Icons.email),
               focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: AppColors.border),
                 borderRadius: BorderRadius.circular(11),
@@ -35,7 +51,7 @@ class Connexion extends StatelessWidget {
             ),
           ),
           SizedBox(height: 15),
-      
+
           Text(
             "Mot de passe",
             style: TextStyle(
@@ -46,8 +62,27 @@ class Connexion extends StatelessWidget {
           ),
           SizedBox(height: 3),
           TextFormField(
-          
+            obscureText: _obscurePassword,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return "mot de passe est obligatoire.";
+              }
+
+              if (value.length < 4) {
+                return "mot de passe non valide";
+              }
+            },
             decoration: InputDecoration(
+              hintText: "mot de passe",
+              suffixIcon: IconButton(
+                onPressed: () {
+                  setState(() {
+                    _obscurePassword = !_obscurePassword;
+                  });
+                },
+                icon: Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility, color: AppColors.primaryLight,),
+              ),
+              prefixIcon: Icon(Icons.lock_outline),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(11),
                 borderSide: BorderSide(color: AppColors.border),
@@ -56,7 +91,6 @@ class Connexion extends StatelessWidget {
                 borderSide: BorderSide(color: AppColors.border),
                 borderRadius: BorderRadius.circular(11),
               ),
-              hintText: "..........",
             ),
           ),
           SizedBox(height: 6),
@@ -76,27 +110,9 @@ class Connexion extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 140),
-          Container(
-            height: 50,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: AppColors.primary,
-              borderRadius: BorderRadius.circular(15),
-            ),
-            child: Center(
-              child: Text(
-                "Se connecter",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 15,
-                ),
-              ),
-            ),
-          ),
+       
         ],
-      ),
-    );
+      );
+    
   }
 }
