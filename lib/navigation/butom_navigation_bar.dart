@@ -4,7 +4,7 @@ import 'package:mes_depenses/pages/acceuil/aceuil_page.dart';
 import 'package:mes_depenses/pages/categorie/depense_page.dart';
 import 'package:mes_depenses/pages/historique/historique_page.dart';
 import 'package:mes_depenses/pages/home/home_page.dart';
-import 'package:mes_depenses/pages/setting/setting_page.dart';
+import 'package:mes_depenses/pages/setting/profil_page.dart';
 
 class ButomNavigationBarPage extends StatefulWidget {
   const new({super.key});
@@ -19,7 +19,7 @@ class _ButomNavigationBarState extends State<ButomNavigationBarPage> {
     HomePage(),
     HistoriquePage(),
     AjouteDepense(),
-    SettingPage(),
+    ProfilPage(),
   ];
 
   void _onTap(int i) {

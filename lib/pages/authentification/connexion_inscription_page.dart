@@ -3,6 +3,7 @@ import 'package:mes_depenses/navigation/butom_navigation_bar.dart';
 import 'package:mes_depenses/pages/authentification/connexion.dart';
 import 'package:mes_depenses/pages/authentification/inscription_page.dart';
 import 'package:mes_depenses/color.dart';
+import 'package:mes_depenses/pages/questions/questions_page.dart';
 
 class ConnexionInscriptionPage extends StatefulWidget {
   const new({super.key});
@@ -148,8 +149,18 @@ class _ConnexionInscriptionPageState extends State<ConnexionInscriptionPage> {
                     onTap: () {
                       if (key.currentState!.validate()) {
                         isLogin
-                            ? Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context)=> ButomNavigationBarPage()))
-                            : print("############ Creer compte");
+                            ? Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      ButomNavigationBarPage(),
+                                ),
+                              )
+                            : Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      QuestionsPage(),
+                                ),
+                              );
                       }
                     },
                     child: Container(

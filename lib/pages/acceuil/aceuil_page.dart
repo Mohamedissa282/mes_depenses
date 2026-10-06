@@ -16,7 +16,7 @@ class _AceuilPageState extends State<AceuilPage> {
   final PageController controller = PageController();
 
   bool lastPage = false;
-
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,7 +35,7 @@ class _AceuilPageState extends State<AceuilPage> {
                 },
                 children: [Page1(), Page2()],
               ),
-          
+
               Positioned(
                 bottom: 120,
                 left: 160,
