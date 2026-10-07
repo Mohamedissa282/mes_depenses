@@ -2,13 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:mes_depenses/color.dart';
 
 class Connexion extends StatefulWidget {
-  const new({super.key});
+  final TextEditingController? emailController;
+  final TextEditingController? passwordController;
+  const new({super.key, required this.emailController, required this.passwordController});
 
   @override
   State<Connexion> createState() => _ConnexionState();
 }
 
 class _ConnexionState extends State<Connexion> {
+
  
   bool _obscurePassword = true;
   @override
@@ -26,6 +29,7 @@ class _ConnexionState extends State<Connexion> {
           ),
           SizedBox(height: 3),
           TextFormField(
+            controller: widget.emailController,
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return "Email est obligatoire.";
@@ -63,6 +67,7 @@ class _ConnexionState extends State<Connexion> {
           SizedBox(height: 3),
           TextFormField(
             obscureText: _obscurePassword,
+            controller: widget.passwordController,
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return "mot de passe est obligatoire.";

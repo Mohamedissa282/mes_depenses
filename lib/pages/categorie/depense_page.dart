@@ -1,7 +1,14 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:mes_depenses/color.dart';
+import 'package:mes_depenses/provider/budget_provider.dart';
+import 'package:mes_depenses/provider/user_provider.dart';
+import 'package:mes_depenses/widget/awesome_dialog_error.dart';
+import 'package:mes_depenses/widget/awesome_dialog_succes.dart';
+import 'package:provider/provider.dart';
 
 class AjouteDepense extends StatefulWidget {
   const new({super.key});
@@ -11,9 +18,14 @@ class AjouteDepense extends StatefulWidget {
 }
 
 class _AjouteDepenseState extends State<AjouteDepense> {
-  String selectedCategorie = "";
+  TextEditingController montantController = TextEditingController();
+  TextEditingController noteController = TextEditingController();
+
+  GlobalKey<FormState> key = GlobalKey();
+  String selectedCategorie = "Sorties";
   DateTime dateTime = new DateTime.now();
 
+  bool isLoading = false;
   void initState() {
     Timer.periodic(Duration(seconds: 1), (timer) {
       setState(() {
@@ -21,6 +33,49 @@ class _AjouteDepenseState extends State<AjouteDepense> {
       });
     });
     super.initState();
+  }
+
+  Future<void> ajouteDepense() async {
+    try {
+      setState(() {
+        isLoading = true;
+      });
+      final uid = Provider.of<UserProvider>(context, listen: false).idUser;
+      DateTime now = DateTime.now();
+      String moisActuel = DateFormat('MMMM', 'fr_FR').format(now);
+      int anneeActuelle = now.year;
+
+      await FirebaseFirestore.instance
+          .collection("users")
+          .doc(uid)
+          .collection("expenses")
+          .add({
+            "montant": double.tryParse(montantController.text) ?? 0.0,
+            "categorie": selectedCategorie,
+            "note": noteController.text.trim(),
+            "date": now,
+            "mois": moisActuel,
+            "annee": anneeActuelle,
+          });
+
+      setState(() {
+        isLoading = false;
+      });
+      final budgetProvider = Provider.of<Budgetprovider>(
+        context,
+        listen: false,
+      );
+      final userProvider = Provider.of<UserProvider>(context, listen: false);
+
+      budgetProvider.chargerDepensesDuMois(
+        userProvider.idUser,
+        userProvider.budegtMax,
+      );
+
+      ShowDialogSucces(context, "La dépense à été ajouté avec succes");
+    } catch (e) {
+      print("###################### ${e}");
+    }
   }
 
   @override
@@ -31,116 +86,146 @@ class _AjouteDepenseState extends State<AjouteDepense> {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 27),
           child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Nouvelle dépense",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                ),
-                SizedBox(height: 14),
-                Text(
-                  "Veuillez sasir le montant",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14,
-                    color: Colors.grey,
+            child: Form(
+              key: key,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Nouvelle dépense",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                   ),
-                ),
-                SizedBox(height: 6),
-                TextFormField(
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    hintText: "0 £",
-                    hintStyle: TextStyle(color: Colors.black),
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15),
-                      borderSide: BorderSide.none,
+                  SizedBox(height: 14),
+                  Text(
+                    "Veuillez sasir le montant",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                      color: Colors.grey,
                     ),
                   ),
-                ),
-
-                SizedBox(height: 30),
-                Text(
-                  "Catégorie",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
-                ),
-                SizedBox(height: 10),
-                Wrap(
-                  spacing: 9,
-                  runSpacing: 10,
-                  children: [
-                    Categorie("Restaurant"),
-                    Categorie("Etudes"),
-                    Categorie("Sortie"),
-                    Categorie("Transport"),
-                  ],
-                ),
-                SizedBox(height: 20),
-                Text(
-                  "Date",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
-                ),
-                SizedBox(height: 7),
-                Text(
-                  "${dateTime.day}/${dateTime.month}/${dateTime.year}. ${dateTime.hour}h : ${dateTime.minute}",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
-                ),
-
-                SizedBox(height: 40),
-                Text(
-                  "Note(facultatif)",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
-                ),
-                SizedBox(height: 8),
-                TextFormField(
-                  style: TextStyle(
-                    color: Colors.grey,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  keyboardType: TextInputType.text,
-                  decoration: InputDecoration(
-                    hintText: "Ex: déjeuner",
-                    hintStyle: TextStyle(color: Colors.grey),
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15),
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
-                ),
-                SizedBox(height: 120),
-                InkWell(
-                  onTap: () {
-                    print("############  ${dateTime}");
-                  },
-                  child: Container(
-                    height: 50,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
+                  SizedBox(height: 6),
+                  TextFormField(
+                    controller: montantController,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Veuillez ajouter le montant";
+                      }
+                    },
+                    style: TextStyle(
                       color: Colors.black,
-                      borderRadius: BorderRadius.circular(15),
+                      fontWeight: FontWeight.bold,
                     ),
-                    child: Center(
-                      child: Text(
-                        "Enregistrer",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 15,
-                        ),
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      hintText:
+                          "0 ${Provider.of<UserProvider>(context).currencySymbole}",
+                      hintStyle: TextStyle(color: Colors.black),
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: BorderSide.none,
                       ),
                     ),
                   ),
-                ),
-              ],
+
+                  SizedBox(height: 30),
+                  Text(
+                    "Catégorie",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                  ),
+                  SizedBox(height: 10),
+                  Wrap(
+                    spacing: 9,
+                    runSpacing: 10,
+                    children: [
+                      Categorie("Sorties"),
+                      Categorie("Études"),
+                      Categorie("Restaurant"),
+                      Categorie("Transport"),
+                      Categorie("Santé"),
+                      Categorie("Sport"),
+                      Categorie("Autres"),
+                    ],
+                  ),
+                  SizedBox(height: 20),
+                  Text(
+                    "Date",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                  ),
+                  SizedBox(height: 7),
+                  Text(
+                    "${dateTime.day}/${dateTime.month}/${dateTime.year}. ${dateTime.hour}h : ${dateTime.minute}",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                  ),
+
+                  SizedBox(height: 40),
+                  Text(
+                    "Note(facultatif)",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                  ),
+                  SizedBox(height: 8),
+                  TextFormField(
+                    controller: noteController,
+                    style: TextStyle(
+                      color: Colors.grey,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    keyboardType: TextInputType.text,
+                    decoration: InputDecoration(
+                      hintText: "Ex: déjeuner",
+                      hintStyle: TextStyle(color: Colors.grey),
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: BorderSide.none,
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 80),
+                  InkWell(
+                    onTap: () {
+                      if (key.currentState!.validate()) {
+                        ajouteDepense();
+                        montantController.clear();
+                        noteController.clear();
+                        setState(() {
+                          selectedCategorie = "Sorties";
+                        });
+                      }
+                    },
+                    child: Container(
+                      height: 50,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: Colors.black,
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: Center(
+                        child: isLoading
+                            ? SizedBox(
+                                width: 22,
+                                height: 22,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2.5,
+                                  color: Colors.white,
+                                ),
+                              )
+                            : Text(
+                                "Enregistrer",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15,
+                                ),
+                              ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

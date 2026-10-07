@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mes_depenses/provider/monaie_budget.dart';
+import 'package:provider/provider.dart';
 
 class Question2 extends StatefulWidget {
   const new({super.key});
@@ -8,8 +10,11 @@ class Question2 extends StatefulWidget {
 }
 
 class _Question2State extends State<Question2> {
+  TextEditingController budgetController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<MonaieBudget>(context, listen: false);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -25,6 +30,11 @@ class _Question2State extends State<Question2> {
         ),
         SizedBox(height: 20),
         TextFormField(
+          controller: budgetController,
+          onChanged: (value) {
+            double budget = double.tryParse(value) ?? 0.0;
+            userProvider.addBudget(budget);
+          },
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
           keyboardType: TextInputType.number,
           decoration: InputDecoration(

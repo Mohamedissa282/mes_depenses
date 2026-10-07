@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:currency_picker/currency_picker.dart';
 import 'package:mes_depenses/color.dart';
+import 'package:mes_depenses/provider/monaie_budget.dart';
+import 'package:provider/provider.dart';
 
 class Question1 extends StatefulWidget {
   const new({super.key});
@@ -10,8 +12,8 @@ class Question1 extends StatefulWidget {
 }
 
 class _Question1State extends State<Question1> {
-  String selectedCurrencyCode = ""; 
-  String selectedCurrencySymbol = ""; 
+  String selectedCurrencyCode = "";
+  String selectedCurrencySymbol = "";
   String selectedCurrencyName = "";
   bool isCustomCurrency = false;
   @override
@@ -155,8 +157,6 @@ class _Question1State extends State<Question1> {
                   ),
                 ),
               ),
-
-             
             ],
           ),
         ],
@@ -173,7 +173,7 @@ class _Question1State extends State<Question1> {
           selectedCurrencyCode = code;
           selectedCurrencySymbol = symbol;
           selectedCurrencyName = name;
-          isCustomCurrency = false;
+          Provider.of<MonaieBudget>(context, listen: false).addMonaie(selectedCurrencyCode, selectedCurrencySymbol, selectedCurrencyName);
         });
       },
       child: Container(

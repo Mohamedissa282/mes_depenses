@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1003615524137",
+    "project_id": "fluttertest-e0008",
+    "storage_bucket": "fluttertest-e0008.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1003615524137:android:d50e573b6dd50167a3d338",
+        "android_client_info": {
+          "package_name": "com.mohamed.mesdepenses"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAQ9drA0TR_uWUeXW-MR7mV9EBZb1bhm4Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

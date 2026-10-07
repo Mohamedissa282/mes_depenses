@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:mes_depenses/color.dart';
 
 class InscriptionPage extends StatefulWidget {
-  const new({super.key});
+  final TextEditingController? eamilController;
+  final TextEditingController? passwordController;
+  final TextEditingController? nomController;
+  const new({super.key, required this.eamilController, required this.nomController, required this.passwordController});
 
   @override
   State<InscriptionPage> createState() => _InscriptionPageState();
@@ -28,6 +31,7 @@ class _InscriptionPageState extends State<InscriptionPage> {
           ),
           SizedBox(height: 3),
           TextFormField(
+            controller: widget.nomController,
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return "nom est obligatoire.";
@@ -57,6 +61,7 @@ class _InscriptionPageState extends State<InscriptionPage> {
           ),
           SizedBox(height: 3),
           TextFormField(
+            controller: widget.eamilController,
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return "Email est obligatoire.";
@@ -93,6 +98,7 @@ class _InscriptionPageState extends State<InscriptionPage> {
           ),
           SizedBox(height: 3),
           TextFormField(
+            
             obscureText: _obscurePassword,
             validator: (value) {
               if (value == null || value.isEmpty) {
@@ -103,6 +109,7 @@ class _InscriptionPageState extends State<InscriptionPage> {
                 return "mot de passe non valide";
               }
             },
+            controller:widget.passwordController ,
             decoration: InputDecoration(
               hintText: "mot de passe",
               suffixIcon: IconButton(

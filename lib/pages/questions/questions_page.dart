@@ -1,13 +1,17 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:mes_depenses/color.dart';
 import 'package:mes_depenses/navigation/butom_navigation_bar.dart';
 import 'package:mes_depenses/pages/questions/question1.dart';
 import 'package:mes_depenses/pages/questions/question2.dart';
+import 'package:mes_depenses/provider/monaie_budget.dart';
 import 'package:mes_depenses/widget/myButon.dart';
+import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class QuestionsPage extends StatefulWidget {
-  const new({super.key});
+  String uid;
+  new({super.key, required this.uid});
 
   @override
   State<QuestionsPage> createState() => _QuestionsPageState();
@@ -17,6 +21,49 @@ class _QuestionsPageState extends State<QuestionsPage> {
   PageController controller = PageController();
   int index = 0;
   bool lastPage = false;
+
+  bool isLoading = false;
+  Future<void> enrgistrerInfo() async {
+    try {
+      setState(() {
+        isLoading = true;
+      });
+      await FirebaseFirestore.instance
+          .collection("users")
+          .doc(widget.uid)
+          .update({
+            "currencyCode": Provider.of<MonaieBudget>(
+              context,
+              listen: false,
+            ).selectedCurrencyCode,
+            "currencySymbole": Provider.of<MonaieBudget>(
+              context,
+              listen: false,
+            ).selectedCurrencySymbol,
+            "currencyName": Provider.of<MonaieBudget>(
+              context,
+              listen: false,
+            ).selectedCurrencyName,
+            "budgetMaxe": Provider.of<MonaieBudget>(
+              context,
+              listen: false,
+            ).budegtMax,
+          });
+      setState(() {
+        isLoading = false;
+      });
+
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => ButomNavigationBarPage()),
+      );
+    } catch (e) {
+      print(e);
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -76,22 +123,53 @@ class _QuestionsPageState extends State<QuestionsPage> {
 
               lastPage
                   ? Mybuton(
-                      text: "Terminer",
+                      child: isLoading
+                          ? SizedBox(
+                              width: 22,
+                              height: 22,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2.5,
+                                color: Colors.white,
+                              ),
+                            )
+                          : Text(
+                              "Terminer",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15,
+                              ),
+                            ),
                       onTap: () {
-                        Navigator.of(context).pushReplacement(
-                          (MaterialPageRoute(
-                            builder: (context) => ButomNavigationBarPage(),
-                          )),
-                        );
+                        enrgistrerInfo();
+                       
                       },
                     )
                   : Mybuton(
-                      text: "Continuer",
+                      child: Text(
+                        "Continuer",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                        ),
+                      ),
+
                       onTap: () {
-                        controller.nextPage(
-                          duration: Duration(microseconds: 300),
-                          curve: Curves.bounceIn,
-                        );
+                        if (Provider.of<MonaieBudget>(
+                              context,
+                              listen: false,
+                            ).selectedCurrencyCode ==
+                            "vide") {
+                          print("is vide");
+                        } else {
+                          controller.nextPage(
+                            duration: Duration(microseconds: 300),
+                            curve: Curves.bounceIn,
+                          );
+                        }
+                       
+                       
                       },
                     ),
             ],
