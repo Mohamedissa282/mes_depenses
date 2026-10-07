@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mes_depenses/color.dart';
+import 'package:mes_depenses/pages/authentification/connexion_inscription_page.dart';
 import 'package:mes_depenses/provider/user_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -24,7 +26,7 @@ class _SettingPageState extends State<ProfilPage> {
             children: [
               Text(
                 "Profil",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 21),
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
               SizedBox(height: 15),
               Container(
@@ -38,10 +40,10 @@ class _SettingPageState extends State<ProfilPage> {
                   leading: CircleAvatar(
                     backgroundColor: AppColors.primary,
                     child: Text(
-                      "MI",
+                      userProvider.nom[0].toUpperCase(),
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                        color: Colors.white, fontSize: 21
                       ),
                     ),
                   ),
@@ -49,7 +51,7 @@ class _SettingPageState extends State<ProfilPage> {
                     Provider.of<UserProvider>(context).nom,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      color: Colors.black,
+                      color: Colors.black, fontSize: 16
                     ),
                   ),
 
@@ -67,11 +69,11 @@ class _SettingPageState extends State<ProfilPage> {
                 "MONNAIE",
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  fontSize: 15,
+                  fontSize: 14,
                   color: Colors.grey,
                 ),
               ),
-              SizedBox(height: 15),
+              SizedBox(height: 7),
               Container(
                 width: double.infinity,
                 height: 80,
@@ -80,194 +82,200 @@ class _SettingPageState extends State<ProfilPage> {
                   borderRadius: BorderRadius.circular(13),
                 ),
                 child: ListTile(
-                      leading: CircleAvatar(
-                        backgroundColor: AppColors.primary,
-                        child: Text(
-                          userProvider.currencySymbole,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                      title: Text(
-                        userProvider.currencyName,
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-
-                      subtitle: Text(
-                        "Monnaie principale",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.grey,
-                        ),
+                  leading: CircleAvatar(
+                    backgroundColor: AppColors.primary,
+                    child: Text(
+                      userProvider.currencySymbole,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
                       ),
                     ),
-                  
-                
+                  ),
+                  title: Text(
+                    userProvider.currencyName,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+
+                  subtitle: Text(
+                    "Monnaie principale",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ),
               ),
-            SizedBox(height: 15),
+              SizedBox(height: 15),
               Text(
                 "PREFERNCES",
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  fontSize: 15,
+                  fontSize: 14,
                   color: Colors.grey,
                 ),
               ),
-              SizedBox(height: 15),
+              SizedBox(height: 7),
 
               Expanded(
                 child: Container(
                   width: double.infinity,
-                  height: 80,
+                  // height: 80,
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(13),
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.all(4.0),
+                    padding: const EdgeInsets.all(3.0),
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         ListTile(
-                              leading: CircleAvatar(
-                                backgroundColor: Color(0xFFD9EEE9),
-                                child: Icon(Icons.notifications_outlined,color: Color(0xFF0B6B5D),)
-                              ),
-                              title: Text(
-                                "Notifications",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black,
-                                ),
-                              ),
-                        
-                              subtitle: Text(
-                                "Alerte si tu dépasse ton budget",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.grey,
-                                  fontSize: 12
-                                ),
-                              ),
-                              trailing: Switch(
-                                activeThumbColor: Colors.white,
-                               activeTrackColor: AppColors.primaryLight,
-                               
-                                value: true, onChanged: (val){}
-                                
-                                ),
+                          leading: CircleAvatar(
+                            backgroundColor: Color(0xFFD9EEE9),
+                            child: Icon(
+                              Icons.notifications_outlined,
+                              color: Color(0xFF0B6B5D),
                             ),
-                                    
-                            Divider(),
-                    
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                              Row(children: [
-                                CircleAvatar(
-                                backgroundColor: Color(0xFFD9EEE9),
-                                child: Icon(Icons.language,color: Color(0xFF0B6B5D),)
-                              ),
-                    SizedBox(width: 9),
-                              Text(
-                                "Langue",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black,
-                                ),
-                              ),
-                              ],),
-                    
-                              Row(children: [
-                                Text(
-                                "Français",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black,
-                                ),
-                              ),
-                              IconButton(onPressed: (){
+                          ),
+                          title: Text(
+                            "Notifications",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                          ),
 
-                              }, icon: Icon(Icons.chevron_right))
-                              ],)
-                            ],)
+                          subtitle: Text(
+                            "Alerte si tu dépasse ton budget",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.grey,
+                              fontSize: 12,
+                            ),
+                          ),
+                          trailing: Switch(
+                            activeThumbColor: Colors.white,
+                            activeTrackColor: AppColors.primaryLight,
+
+                            value: true,
+                            onChanged: (val) {},
+                          ),
+                        ),
+
+                        Divider(),
+
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                CircleAvatar(
+                                  backgroundColor: Color(0xFFD9EEE9),
+                                  child: Icon(
+                                    Icons.language,
+                                    color: Color(0xFF0B6B5D),
+                                  ),
+                                ),
+                                SizedBox(width: 9),
+                                Text(
+                                  "Langue",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ],
+                            ),
+
+                            Row(
+                              children: [
+                                Text(
+                                  "Français",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                IconButton(
+                                  onPressed: () {},
+                                  icon: Icon(Icons.chevron_right),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ],
                     ),
                   ),
-                    
-                  
                 ),
               ),
-              SizedBox(height: 14,),
-              InkWell(
-                onTap: () {
-                  print(
-                    Provider.of<UserProvider>(
-                      context,
-                      listen: false,
-                    ).currencyCode,
-                  );
-                  print(
-                    Provider.of<UserProvider>(
-                      context,
-                      listen: false,
-                    ).currencyName,
-                  );
-                  print(
-                    Provider.of<UserProvider>(
-                      context,
-                      listen: false,
-                    ).currencySymbole,
-                  );
-                },
-                child: Container(
-                  width: double.infinity,
-                  height: 50,
-                  margin: EdgeInsets.only(bottom: 55),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(13),
-                    border: Border.all(color: Colors.redAccent, width: 1),
+              SizedBox(height: 40),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 55),
+                child: InkWell(
+                  onTap: () async {
+                    await FirebaseAuth.instance.signOut();
+                    if (!context.mounted) return;
+                    Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(
+                        builder: (_) => ConnexionInscriptionPage(),
+                      ),
+                      (route) => false,
+                    );
+                  },
+                  child: Container(
+                    width: double.infinity,
+                    height: 48,
+
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(13),
+                      border: Border.all(color: Colors.redAccent, width: 1),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.logout, color: Colors.red),
+                        SizedBox(width: 7),
+                        Text(
+                          "Se déconnecter",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.red,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                ),
+              ),
+
+              Center(
+                child: Container(
+                  margin: EdgeInsets.only(bottom: 55),
+                  child: Column(
                     children: [
-                      Icon(Icons.logout, color: Colors.red),
-                      SizedBox(width: 7),
                       Text(
-                        "Se déconnecter",
+                        "Mes Dépenses",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          color: Colors.red,
+                          color: Colors.black,
+                          fontSize: 15,
+                        ),
+                      ),
+                      SizedBox(height: 5),
+                      Text(
+                        "Version 1.0.0",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey,
                         ),
                       ),
                     ],
-                  ),
-                ),
-              ),
-              
-              Align(
-                alignment: AlignmentGeometry.center,
-                child: Text(
-                  "Mes dépenses",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-              ),
-              SizedBox(height: 5),
-              Align(
-                alignment: AlignmentGeometry.center,
-                child: Text(
-                  "Version 1.0.0",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.grey,
                   ),
                 ),
               ),

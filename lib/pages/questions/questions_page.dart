@@ -5,6 +5,7 @@ import 'package:mes_depenses/navigation/butom_navigation_bar.dart';
 import 'package:mes_depenses/pages/questions/question1.dart';
 import 'package:mes_depenses/pages/questions/question2.dart';
 import 'package:mes_depenses/provider/monaie_budget.dart';
+import 'package:mes_depenses/provider/user_provider.dart';
 import 'package:mes_depenses/widget/myButon.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -52,6 +53,16 @@ class _QuestionsPageState extends State<QuestionsPage> {
       setState(() {
         isLoading = false;
       });
+      final userProvider = Provider.of<UserProvider>(context, listen: false);
+      final monaieProvider = Provider.of<MonaieBudget>(context, listen: false);
+      userProvider.setId(widget.uid);
+      userProvider.setCurrency(
+        monaieProvider.selectedCurrencyCode,
+        monaieProvider.selectedCurrencyName,
+        monaieProvider.selectedCurrencySymbol,
+      );
+      userProvider.setBudget(monaieProvider.budegtMax);
+      
 
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (context) => ButomNavigationBarPage()),
@@ -142,7 +153,6 @@ class _QuestionsPageState extends State<QuestionsPage> {
                             ),
                       onTap: () {
                         enrgistrerInfo();
-                       
                       },
                     )
                   : Mybuton(
@@ -168,8 +178,6 @@ class _QuestionsPageState extends State<QuestionsPage> {
                             curve: Curves.bounceIn,
                           );
                         }
-                       
-                       
                       },
                     ),
             ],

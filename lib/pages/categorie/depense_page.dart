@@ -26,14 +26,6 @@ class _AjouteDepenseState extends State<AjouteDepense> {
   DateTime dateTime = new DateTime.now();
 
   bool isLoading = false;
-  void initState() {
-    Timer.periodic(Duration(seconds: 1), (timer) {
-      setState(() {
-        dateTime = DateTime.now();
-      });
-    });
-    super.initState();
-  }
 
   Future<void> ajouteDepense() async {
     try {
@@ -80,6 +72,14 @@ class _AjouteDepenseState extends State<AjouteDepense> {
 
   @override
   Widget build(BuildContext context) {
+    final budgetProvider = Provider.of<Budgetprovider>(
+        context,
+        
+      );
+      final userProvider = Provider.of<UserProvider>(context);
+    DateTime now = DateTime.now();
+    String moisActuel = DateFormat('MMMM', 'fr_FR').format(now);
+    int anneeActuelle = now.year;
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
@@ -93,7 +93,7 @@ class _AjouteDepenseState extends State<AjouteDepense> {
                 children: [
                   Text(
                     "Nouvelle dépense",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
                   ),
                   SizedBox(height: 14),
                   Text(
@@ -149,18 +149,8 @@ class _AjouteDepenseState extends State<AjouteDepense> {
                       Categorie("Autres"),
                     ],
                   ),
-                  SizedBox(height: 20),
-                  Text(
-                    "Date",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
-                  ),
-                  SizedBox(height: 7),
-                  Text(
-                    "${dateTime.day}/${dateTime.month}/${dateTime.year}. ${dateTime.hour}h : ${dateTime.minute}",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
-                  ),
+                  SizedBox(height: 32),
 
-                  SizedBox(height: 40),
                   Text(
                     "Note(facultatif)",
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
@@ -184,7 +174,31 @@ class _AjouteDepenseState extends State<AjouteDepense> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 80),
+                   SizedBox(height: 80),
+
+                  Container(
+                    height: 40,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15),
+                      color: Color(0xFFD9EEE9),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(11.0),
+                      child: Center(
+                        child: Text(
+                          "Il vous restera ${budgetProvider.resteBudget} ${userProvider.currencySymbole} pour mois ${moisActuel}",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15,
+                            color: AppColors.primaryLight
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(height: 22),
                   InkWell(
                     onTap: () {
                       if (key.currentState!.validate()) {

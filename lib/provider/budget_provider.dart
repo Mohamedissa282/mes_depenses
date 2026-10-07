@@ -6,12 +6,22 @@ class Budgetprovider with ChangeNotifier {
   double _resteBudget = 0.0;
   double _totalDepense = 0.0;
   List<QueryDocumentSnapshot> _depensesDuMois = [];
-
+  bool _isLoding = true;
+  bool _isHiden = false;
+  bool get isLoading => _isLoding;
+  bool get isHiden => _isHiden;
   double get resteBudget => _resteBudget;
   double get totalDepense => _totalDepense;
   List<QueryDocumentSnapshot> get listDepenses => _depensesDuMois;
 
+  void getHiden() {
+    _isHiden = !_isHiden;
+    notifyListeners();
+  }
+
   Future<void> chargerDepensesDuMois(String uid, double budgetMax) async {
+    _isLoding = true;
+    notifyListeners();
     DateTime now = DateTime.now();
     String moisActuel = DateFormat('MMMM', 'fr_FR').format(now).toLowerCase();
     int anneeActuelle = now.year;
@@ -33,7 +43,7 @@ class Budgetprovider with ChangeNotifier {
 
     _resteBudget = budgetMax - _totalDepense;
 
+    _isLoding = false;
     notifyListeners();
   }
 }
-

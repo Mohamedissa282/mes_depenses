@@ -48,6 +48,14 @@ class _ConnexionInscriptionPageState extends State<ConnexionInscriptionPage> {
       setState(() {
         isLoading = false;
       });
+      Provider.of<UserProvider>(
+        context,
+        listen: false,
+      ).setName(nomController.text.trim());
+      Provider.of<UserProvider>(
+        context,
+        listen: false,
+      ).setEmail(emailController.text.trim());
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => QuestionsPage(uid: uid)),
@@ -107,7 +115,7 @@ class _ConnexionInscriptionPageState extends State<ConnexionInscriptionPage> {
 
       Provider.of<UserProvider>(context, listen: false).setCurrency(
         documentSnapshot['currencyCode'],
-        
+
         documentSnapshot['currencyName'],
         documentSnapshot['currencySymbole'],
       );
@@ -117,10 +125,7 @@ class _ConnexionInscriptionPageState extends State<ConnexionInscriptionPage> {
         listen: false,
       ).setBudget(documentSnapshot['budgetMaxe']);
 
-      Provider.of<UserProvider>(
-        context,
-        listen: false,
-      ).setId(uid);
+      Provider.of<UserProvider>(context, listen: false).setId(uid);
 
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (_) => ButomNavigationBarPage()),
