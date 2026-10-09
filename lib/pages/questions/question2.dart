@@ -30,6 +30,11 @@ class _Question2State extends State<Question2> {
         ),
         SizedBox(height: 20),
         TextFormField(
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return "Saiasir votre budget";
+            }
+          },
           controller: budgetController,
           onChanged: (value) {
             double budget = double.tryParse(value) ?? 0.0;

@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mes_depenses/color.dart';
 import 'package:mes_depenses/pages/authentification/connexion_inscription_page.dart';
+import 'package:mes_depenses/pages/setting/modifier_profil_page.dart';
 import 'package:mes_depenses/provider/user_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -13,6 +14,50 @@ class ProfilPage extends StatefulWidget {
 }
 
 class _SettingPageState extends State<ProfilPage> {
+  bool isActive = false;
+  void afficherChoixLangue() {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (ctx) {
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                "Langue",
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+              ),
+              SizedBox(height: 8),
+              ListTile(
+                leading: Icon(Icons.language),
+                title: Text(
+                  "Francais",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                trailing: Icon(Icons.check, color: Colors.green),
+
+                onTap: () {},
+              ),
+              ListTile(
+                leading: Icon(Icons.language),
+                title: Text(
+                  "Anglais",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                trailing: Icon(Icons.check, color: Colors.green),
+                onTap: () {},
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context);
@@ -43,15 +88,25 @@ class _SettingPageState extends State<ProfilPage> {
                       userProvider.nom[0].toUpperCase(),
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        color: Colors.white, fontSize: 21
+                        color: Colors.white,
+                        fontSize: 21,
                       ),
                     ),
+                  ),
+                  trailing: IconButton(
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(builder: (_) => ModifierProfilPage()),
+                      );
+                    },
+                    icon: Icon(Icons.edit,size: 20,),
                   ),
                   title: Text(
                     Provider.of<UserProvider>(context).nom,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      color: Colors.black, fontSize: 16
+                      color: Colors.black,
+                      fontSize: 16,
                     ),
                   ),
 
@@ -129,7 +184,7 @@ class _SettingPageState extends State<ProfilPage> {
                     borderRadius: BorderRadius.circular(13),
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.all(3.0),
+                    padding: const EdgeInsets.all(1.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -157,12 +212,19 @@ class _SettingPageState extends State<ProfilPage> {
                               fontSize: 12,
                             ),
                           ),
-                          trailing: Switch(
-                            activeThumbColor: Colors.white,
-                            activeTrackColor: AppColors.primaryLight,
+                          trailing: Transform.scale(
+                            scale: 0.75,
+                            child: Switch(
+                              activeThumbColor: Colors.white,
+                              activeTrackColor: AppColors.primaryLight,
 
-                            value: true,
-                            onChanged: (val) {},
+                              value: isActive,
+                              onChanged: (val) {
+                                setState(() {
+                                  isActive = !isActive;
+                                });
+                              },
+                            ),
                           ),
                         ),
 
@@ -201,7 +263,9 @@ class _SettingPageState extends State<ProfilPage> {
                                   ),
                                 ),
                                 IconButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    afficherChoixLangue();
+                                  },
                                   icon: Icon(Icons.chevron_right),
                                 ),
                               ],

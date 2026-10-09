@@ -1,19 +1,133 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fl_chart/fl_chart.dart';
+import 'package:lottie/lottie.dart';
 import 'package:mes_depenses/color.dart';
+import 'package:mes_depenses/color/categorie_color.dart';
+import 'package:mes_depenses/provider/user_provider.dart';
+import 'package:mes_depenses/utils/date_formatter.dart';
+import 'package:provider/provider.dart';
 
 class HistoriquePage extends StatefulWidget {
-  const new({super.key});
+  const HistoriquePage({super.key});
 
   @override
   State<HistoriquePage> createState() => _HistoriquePageState();
 }
 
 class _HistoriquePageState extends State<HistoriquePage> {
-  int selected = -1;
-  int selectedFixe = 3;
-  List mois = ["Juin", "Juillet", "Aout", "Sept."];
+  List<String> moisList = [];
+  String moisSelectionne = "";
+  bool isLoding = true;
+  List<QueryDocumentSnapshot> depenses = [];
+  Map<String, double> dataGraphique = {};
+
+  @override
+  void initState() {
+    super.initState();
+    chargerTousLesMois();
+  }
+
+  // Charger tous les mois disponibles
+  Future<void> chargerTousLesMois() async {
+    setState(() {
+      isLoding = true;
+    });
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+
+    final snapshot = await FirebaseFirestore.instance
+        .collection("users")
+        .doc(userProvider.idUser)
+        .collection("expenses")
+        .orderBy("date", descending: true)
+        .get();
+
+    setState(() {
+      isLoding = false;
+    });
+    Set<String> mois = {};
+
+    for (var doc in snapshot.docs) {
+      mois.add("${doc['mois']} ${doc['annee']}");
+    }
+
+    setState(() {
+      moisList = mois.toList();
+      if (moisList.isNotEmpty) {
+        moisSelectionne = moisList.first;
+      }
+    });
+
+    if (moisSelectionne.isNotEmpty) {
+      chargerDepensesDuMois(moisSelectionne);
+    }
+  }
+
+  // Charger les dépenses du mois sélectionné
+  Future<void> chargerDepensesDuMois(String mois) async {
+    final uid = FirebaseAuth.instance.currentUser!.uid;
+
+    final parts = mois.split(" ");
+    final moisTexte = parts[0];
+    final annee = int.parse(parts[1]);
+
+    final snapshot = await FirebaseFirestore.instance
+        .collection("users")
+        .doc(uid)
+        .collection("expenses")
+        .where("mois", isEqualTo: moisTexte)
+        .where("annee", isEqualTo: annee)
+        .get();
+
+    setState(() {
+      depenses = snapshot.docs;
+    });
+
+    calculerGraphique();
+  }
+
+  // Calculer les montants par catégorie
+  void calculerGraphique() {
+    Map<String, double> categories = {};
+
+    for (var d in depenses) {
+      final cat = d['categorie'];
+      final montant = d['montant'] * 1.0;
+
+      categories[cat] = (categories[cat] ?? 0) + montant;
+    }
+
+    setState(() {
+      dataGraphique = categories;
+    });
+  }
+
+  // Couleurs par catégorie
+  Color couleurCategorie(String cat) {
+    switch (cat.toLowerCase()) {
+      case "restaurant":
+        return const Color(0xFFFFA726); // Orange
+      case "transport":
+        return const Color(0xFF29B6F6); // Bleu clair
+      case "santé":
+        return const Color(0xFFE53935); // Rouge
+      case "sport":
+        return const Color(0xFF43A047); // Vert
+      case "études":
+        return const Color(0xFF7E57C2); // Violet
+      case "sorties":
+        return const Color(0xFFEC407A); // Rose
+      case "autres":
+        return const Color(0xFFBDBDBD); // Gris
+      default:
+        return Colors.grey;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserProvider>(context);
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
@@ -26,36 +140,43 @@ class _HistoriquePageState extends State<HistoriquePage> {
                 "Historique",
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
               ),
+
               SizedBox(height: 14),
+
+              isLoding ? CircularProgressIndicator() : 
               SizedBox(
                 height: 40,
-                child: ListView.separated(
-                  itemCount: 4,
-                  separatorBuilder: (context, index) => SizedBox(width: 8),
+                child: ListView.builder(
                   scrollDirection: Axis.horizontal,
+                  itemCount: moisList.length,
                   itemBuilder: (context, index) {
-                    // bool isSelected = selected == index;
-                    bool isSelected = selectedFixe == index;
-                    return InkWell(
+                    final m = moisList[index];
+                    final isSelected = m == moisSelectionne;
+
+                    return GestureDetector(
                       onTap: () {
                         setState(() {
-                          selectedFixe = 3;
+                          moisSelectionne = m;
                         });
+                        chargerDepensesDuMois(m);
                       },
                       child: Container(
-                        width: 70,
-                        decoration: BoxDecoration(
-                          color: isSelected ? AppColors.primary : Colors.white,
-                          borderRadius: BorderRadius.circular(10),
+                        margin: EdgeInsets.symmetric(horizontal: 8),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 8,
                         ),
-                        child: Center(
-                          child: Text(
-                            mois[index],
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 15,
-                              color: isSelected ? Colors.white : Colors.black,
-                            ),
+                        decoration: BoxDecoration(
+                          color: isSelected
+                              ? AppColors.primary
+                              : Colors.grey.shade200,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Text(
+                          m,
+                          style: TextStyle(
+                            color: isSelected ? Colors.white : Colors.black,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),
@@ -63,65 +184,155 @@ class _HistoriquePageState extends State<HistoriquePage> {
                   },
                 ),
               ),
-              SizedBox(height: 40),
-              Text(
-                "2 Octobre",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 15,
-                  color: Colors.grey,
-                ),
-              ),
-              SizedBox(height: 5),
-              Container(
-                width: double.infinity,
-                height: 75,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(14),
-                ),
 
-                child: ListTile(
-                  title: Text(
-                    "Déjeuner",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-                      color: Colors.black,
-                    ),
-                  ),
-                  subtitle: Text(
-                    "Restaurant",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-                      color: Colors.grey,
-                    ),
-                  ),
+              SizedBox(height: 30),
 
-                  trailing: Text(
-                    "-14,50 MRU",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                      color: Colors.black,
-                    ),
-                  ),
-
-                  leading: Container(
-                    height: 40,
-                    width: 40,
-                    decoration: BoxDecoration(
-                      color: Color(0xFFFDE7CF),
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                    child: Icon(
-                      Icons.restaurant,
-                      size: 20,
-                      color: Color(0xFFB45309),
+              if (dataGraphique.isNotEmpty)
+                SizedBox(
+                  height: 200,
+                  child: PieChart(
+                    PieChartData(
+                      sectionsSpace: 2,
+                      centerSpaceRadius: 40,
+                      sections: dataGraphique.entries.map((e) {
+                        return PieChartSectionData(
+                          value: e.value,
+                          title:
+                              "${e.key}\n${e.value.toStringAsFixed(0)} ${userProvider.currencySymbole}",
+                          radius: 60,
+                          color: couleurCategorie(e.key),
+                          titleStyle: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        );
+                      }).toList(),
                     ),
                   ),
                 ),
+
+              SizedBox(height: 20),
+
+              Expanded(
+                child: depenses.isEmpty
+                    ? Center(
+                        child: Column(
+                          children: [
+                            Lottie.asset(
+                              "animation/vide.json",
+                              width: 200,
+                              height: 200,
+                              repeat: true,
+                            ),
+                            SizedBox(height: 4),
+                            Text(
+                              "Acune historique actuellement",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    : ListView.separated(
+                        separatorBuilder: (context, index) =>
+                            SizedBox(height: 9),
+                        itemCount: depenses.length,
+                        itemBuilder: (context, index) {
+                          final d = depenses[index];
+                          String categorie = d['categorie'];
+                          String note = d['note'];
+                          final Timestamp timestamp = d['date'];
+                          final DateTime date = timestamp.toDate();
+
+                          Color bgIcon = BaktaCegoryStyle.getBackground(
+                            categorie,
+                          );
+
+                          IconData catIcon = BaktaCegoryStyle.getIcon(
+                            categorie,
+                          );
+                          Color iconColor = BaktaCegoryStyle.getIconColor(
+                            categorie,
+                          );
+                          return Container(
+                            width: double.infinity,
+                            height: 83,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    height: 40,
+                                    width: 40,
+                                    decoration: BoxDecoration(
+                                      color: bgIcon,
+                                      borderRadius: BorderRadius.circular(14),
+                                    ),
+                                    child: Icon(
+                                      catIcon,
+                                      size: 20,
+                                      color: iconColor,
+                                    ),
+                                  ),
+
+                                  SizedBox(width: 10),
+
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          categorie,
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        Text(
+                                          note.isNotEmpty
+                                              ? note
+                                              : "aucune note",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.grey,
+                                          ),
+                                        ),
+
+                                        Text(
+                                          formatDate(date),
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.grey,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+
+                                  Text(
+                                    "${d['montant']} ${userProvider.currencySymbole}",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
               ),
             ],
           ),

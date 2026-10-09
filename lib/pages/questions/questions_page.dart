@@ -20,6 +20,7 @@ class QuestionsPage extends StatefulWidget {
 
 class _QuestionsPageState extends State<QuestionsPage> {
   PageController controller = PageController();
+  GlobalKey<FormState> key = GlobalKey();
   int index = 0;
   bool lastPage = false;
 
@@ -49,6 +50,7 @@ class _QuestionsPageState extends State<QuestionsPage> {
               context,
               listen: false,
             ).budegtMax,
+            "onboardingCompleted": true,
           });
       setState(() {
         isLoading = false;
@@ -62,7 +64,6 @@ class _QuestionsPageState extends State<QuestionsPage> {
         monaieProvider.selectedCurrencySymbol,
       );
       userProvider.setBudget(monaieProvider.budegtMax);
-      
 
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (context) => ButomNavigationBarPage()),
@@ -82,105 +83,113 @@ class _QuestionsPageState extends State<QuestionsPage> {
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(13.0),
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    height: 40,
-                    width: 40,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                    child: Icon(Icons.arrow_back),
-                  ),
-
-                  SmoothPageIndicator(
-                    controller: controller,
-                    count: 2,
-                    effect: ExpandingDotsEffect(
-                      activeDotColor: AppColors.primaryLight,
-                      dotColor: Colors.grey,
-                    ),
-                  ),
-
-                  Text(
-                    "${index + 1}/2",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-
-                      color: Colors.grey,
-                      fontSize: 18,
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 30),
-
-              Expanded(
-                child: PageView(
-                  controller: controller,
-                  onPageChanged: (i) {
-                    setState(() {
-                      lastPage = (i == 1);
-                      index = i;
-                    });
-                  },
-                  children: [Question1(), Question2()],
-                ),
-              ),
-
-              lastPage
-                  ? Mybuton(
-                      child: isLoading
-                          ? SizedBox(
-                              width: 22,
-                              height: 22,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2.5,
-                                color: Colors.white,
-                              ),
-                            )
-                          : Text(
-                              "Terminer",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 15,
-                              ),
-                            ),
-                      onTap: () {
-                        enrgistrerInfo();
-                      },
-                    )
-                  : Mybuton(
-                      child: Text(
-                        "Continuer",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 15,
-                        ),
+          child: Form(
+            key: key,
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      height: 40,
+                      width: 40,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(14),
                       ),
-
-                      onTap: () {
-                        if (Provider.of<MonaieBudget>(
-                              context,
-                              listen: false,
-                            ).selectedCurrencyCode ==
-                            "vide") {
-                          print("is vide");
-                        } else {
-                          controller.nextPage(
-                            duration: Duration(microseconds: 300),
-                            curve: Curves.bounceIn,
-                          );
-                        }
-                      },
+                      child: Icon(Icons.arrow_back),
                     ),
-            ],
+
+                    SmoothPageIndicator(
+                      controller: controller,
+                      count: 2,
+                      effect: ExpandingDotsEffect(
+                        activeDotColor: AppColors.primaryLight,
+                        dotColor: Colors.grey,
+                      ),
+                    ),
+
+                    Text(
+                      "${index + 1}/2",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+
+                        color: Colors.grey,
+                        fontSize: 18,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 30),
+
+                Expanded(
+                  child: PageView(
+                    controller: controller,
+                    physics: NeverScrollableScrollPhysics(),
+                    onPageChanged: (i) {
+                      setState(() {
+                        lastPage = (i == 1);
+                        index = i;
+                      });
+                    },
+                    children: [Question1(), Question2()],
+                  ),
+                ),
+
+                lastPage
+                    ? Mybuton(
+                        child: isLoading
+                            ? SizedBox(
+                                width: 22,
+                                height: 22,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2.5,
+                                  color: Colors.white,
+                                ),
+                              )
+                            : Text(
+                                "Terminer",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15,
+                                ),
+                              ),
+                        onTap: () {
+                          if(key.currentState!.validate()){
+                             enrgistrerInfo();
+
+                          }
+                         
+                        },
+                      )
+                    : Mybuton(
+                        child: Text(
+                          "Continuer",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15,
+                          ),
+                        ),
+
+                        onTap: () {
+                          if (Provider.of<MonaieBudget>(
+                                context,
+                                listen: false,
+                              ).selectedCurrencyCode ==
+                              "vide") {
+                            print("is vide");
+                          } else {
+                            controller.nextPage(
+                              duration: Duration(microseconds: 300),
+                              curve: Curves.easeInOut,
+                            );
+                          }
+                        },
+                      ),
+              ],
+            ),
           ),
         ),
       ),

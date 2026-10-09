@@ -1,8 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' as categorieBackground;
 import 'package:lottie/lottie.dart';
 import 'package:mes_depenses/color.dart';
+import 'package:mes_depenses/color/categorie_color.dart';
 import 'package:mes_depenses/provider/budget_provider.dart';
 import 'package:mes_depenses/provider/user_provider.dart';
+import 'package:mes_depenses/utils/date_formatter.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
@@ -52,10 +56,7 @@ class _HomePageState extends State<HomePage> {
             backgroundColor: AppColors.background,
             body: SafeArea(
               child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 14,
-                  vertical: 18,
-                ),
+                padding: EdgeInsets.symmetric(horizontal: 14, vertical: 18),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -63,7 +64,7 @@ class _HomePageState extends State<HomePage> {
                       "Bonjour ${Provider.of<UserProvider>(context).nom}",
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 17,
+                        fontSize: 18,
                         color: Colors.grey,
                       ),
                     ),
@@ -104,7 +105,8 @@ class _HomePageState extends State<HomePage> {
                                     budgetProvider.isHiden
                                         ? Icons.visibility_off
                                         : Icons.visibility,
-                                    color: Colors.grey, size: 26,
+                                    color: Colors.grey,
+                                    size: 26,
                                   ),
                                   onPressed: () {
                                     budgetProvider.getHiden();
@@ -114,8 +116,9 @@ class _HomePageState extends State<HomePage> {
                             ),
                             SizedBox(height: 3),
                             Text(
-                              budgetProvider.isHiden ? "••••••" :
-                              "${budgetProvider.resteBudget} ${userProvider.currencySymbole}",
+                              budgetProvider.isHiden
+                                  ? "••••••"
+                                  : "${budgetProvider.resteBudget} ${userProvider.currencySymbole}",
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 23,
@@ -127,8 +130,9 @@ class _HomePageState extends State<HomePage> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  budgetProvider.isHiden ? "••••••" :
-                                  "Dépensé ${budgetProvider.totalDepense} ${userProvider.currencySymbole}",
+                                  budgetProvider.isHiden
+                                      ? "••••••"
+                                      : "Dépensé ${budgetProvider.totalDepense} ${userProvider.currencySymbole}",
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 16,
@@ -136,8 +140,9 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                 ),
                                 Text(
-                                  budgetProvider.isHiden ? "••••••" :
-                                  "Budget ${userProvider.budegtMax} ${userProvider.currencySymbole}",
+                                  budgetProvider.isHiden
+                                      ? "••••••"
+                                      : "Budget ${userProvider.budegtMax} ${userProvider.currencySymbole}",
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 16,
@@ -206,53 +211,93 @@ class _HomePageState extends State<HomePage> {
                               itemCount: budgetProvider.listDepenses.length,
                               itemBuilder: (context, index) {
                                 final d = budgetProvider.listDepenses[index];
+                                String categorie = d['categorie'];
+                                String note = d['note'];
+                                final Timestamp timestamp = d['date'];
+                                final DateTime date = timestamp.toDate();
+
+                                Color bgIcon = BaktaCegoryStyle.getBackground(
+                                  categorie,
+                                );
+
+                                IconData catIcon = BaktaCegoryStyle.getIcon(
+                                  categorie,
+                                );
+                                Color iconColor = BaktaCegoryStyle.getIconColor(
+                                  categorie,
+                                );
                                 return Container(
                                   width: double.infinity,
-                                  height: 75,
+                                  height: 83,
                                   decoration: BoxDecoration(
                                     color: Colors.white,
                                     borderRadius: BorderRadius.circular(14),
                                   ),
 
-                                  child: ListTile(
-                                    title: Text(
-                                      d['note'],
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 14,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                    subtitle: Text(
-                                      d['categorie'],
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 14,
-                                        color: Colors.grey,
-                                      ),
-                                    ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Row(
+                                      children: [
+                                        Container(
+                                          height: 40,
+                                          width: 40,
+                                          decoration: BoxDecoration(
+                                            color: bgIcon,
+                                            borderRadius: BorderRadius.circular(
+                                              14,
+                                            ),
+                                          ),
+                                          child: Icon(
+                                            catIcon,
+                                            size: 20,
+                                            color: iconColor,
+                                          ),
+                                        ),
 
-                                    trailing: Text(
-                                      "${d['montant']} ${userProvider.currencySymbole}",
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16,
-                                        color: Colors.black,
-                                      ),
-                                    ),
+                                        SizedBox(width: 10),
 
-                                    leading: Container(
-                                      height: 40,
-                                      width: 40,
-                                      decoration: BoxDecoration(
-                                        color: Color(0xFFFDE7CF),
-                                        borderRadius: BorderRadius.circular(14),
-                                      ),
-                                      child: Icon(
-                                        Icons.restaurant,
-                                        size: 20,
-                                        color: Color(0xFFB45309),
-                                      ),
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                categorie,
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              Text(
+                                                note.isNotEmpty
+                                                    ? note
+                                                    : "aucune note",
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.grey,
+                                                ),
+                                              ),
+
+                                              Text(
+                                                formatDate(date),
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.grey,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+
+                                        Text(
+                                          "${d['montant']} ${userProvider.currencySymbole}",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 );

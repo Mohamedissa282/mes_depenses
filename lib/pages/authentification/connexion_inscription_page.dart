@@ -43,6 +43,7 @@ class _ConnexionInscriptionPageState extends State<ConnexionInscriptionPage> {
         "nom": nomController.text.trim(),
         "email": emailController.text.trim(),
         "createdAt": FieldValue.serverTimestamp(),
+        "onboardingCompleted": false,
       });
 
       setState(() {
@@ -112,24 +113,30 @@ class _ConnexionInscriptionPageState extends State<ConnexionInscriptionPage> {
         context,
         listen: false,
       ).setEmail(documentSnapshot['email']);
-
-      Provider.of<UserProvider>(context, listen: false).setCurrency(
-        documentSnapshot['currencyCode'],
-
-        documentSnapshot['currencyName'],
-        documentSnapshot['currencySymbole'],
-      );
-
-      Provider.of<UserProvider>(
-        context,
-        listen: false,
-      ).setBudget(documentSnapshot['budgetMaxe']);
-
       Provider.of<UserProvider>(context, listen: false).setId(uid);
 
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => ButomNavigationBarPage()),
-      );
+      if (documentSnapshot['onboardingCompleted'] != false) {
+        Provider.of<UserProvider>(context, listen: false).setCurrency(
+          documentSnapshot['currencyCode'],
+
+          documentSnapshot['currencyName'],
+          documentSnapshot['currencySymbole'],
+        );
+        Provider.of<UserProvider>(
+          context,
+          listen: false,
+        ).setBudget(documentSnapshot['budgetMaxe']);
+      }
+      if (documentSnapshot['onboardingCompleted'] != false) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (_) => ButomNavigationBarPage()),
+        );
+      } else {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => QuestionsPage(uid: uid)),
+        );
+      }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'invalid-credential') {
         ShowDialog(context, "Ce compte a été désactivé");
@@ -150,6 +157,8 @@ class _ConnexionInscriptionPageState extends State<ConnexionInscriptionPage> {
 
   @override
   Widget build(BuildContext context) {
+    double screenWith = MediaQuery.of(context).size.width;
+    double screenHeigth = MediaQuery.of(context).size.height;
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
