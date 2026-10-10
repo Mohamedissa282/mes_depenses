@@ -37,6 +37,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+     double screenWith = MediaQuery.of(context).size.width;
+    double screenHeigth = MediaQuery.of(context).size.height;
     final budgetProvider = Provider.of<Budgetprovider>(context);
     final userProvider = Provider.of<UserProvider>(context);
     final mois = DateFormat('MMMM yyyy', 'fr_FR').format(DateTime.now());
@@ -56,7 +58,7 @@ class _HomePageState extends State<HomePage> {
             backgroundColor: AppColors.background,
             body: SafeArea(
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 14, vertical: 18),
+                padding: EdgeInsets.symmetric(horizontal: screenWith * 0.026, vertical: screenHeigth * 0.022),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -64,7 +66,7 @@ class _HomePageState extends State<HomePage> {
                       "Bonjour ${Provider.of<UserProvider>(context).nom}",
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 18,
+                        fontSize: screenWith * 0.047,
                         color: Colors.grey,
                       ),
                     ),
@@ -72,17 +74,17 @@ class _HomePageState extends State<HomePage> {
                       moisActuel,
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 25,
+                        fontSize: screenWith * 0.063,
                       ),
                     ),
 
-                    SizedBox(height: 15),
+                    SizedBox(height: screenHeigth * 0.020),
                     Container(
                       width: double.infinity,
-                      height: 155,
+                      height: screenHeigth * 0.19,
                       decoration: BoxDecoration(
                         color: AppColors.primary,
-                        borderRadius: BorderRadius.circular(14),
+                        borderRadius: BorderRadius.circular(screenWith * 0.034),
                       ),
                       child: Padding(
                         padding: const EdgeInsets.all(13.0),
@@ -96,7 +98,7 @@ class _HomePageState extends State<HomePage> {
                                   "Reste sur ton budget",
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
-                                    fontSize: 15,
+                                    fontSize: screenWith * 0.042,
                                     color: Colors.white,
                                   ),
                                 ),
@@ -114,18 +116,18 @@ class _HomePageState extends State<HomePage> {
                                 ),
                               ],
                             ),
-                            SizedBox(height: 3),
+                            SizedBox(height: screenHeigth * 0.001),
                             Text(
                               budgetProvider.isHiden
                                   ? "••••••"
                                   : "${budgetProvider.resteBudget} ${userProvider.currencySymbole}",
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                fontSize: 23,
+                                fontSize: screenWith * 0.059,
                                 color: Colors.white,
                               ),
                             ),
-                            SizedBox(height: 20),
+                            SizedBox(height: screenHeigth * 0.024),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -135,7 +137,7 @@ class _HomePageState extends State<HomePage> {
                                       : "Dépensé ${budgetProvider.totalDepense} ${userProvider.currencySymbole}",
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
-                                    fontSize: 16,
+                                    fontSize: screenWith * 0.042,
                                     color: Colors.white,
                                   ),
                                 ),
@@ -145,7 +147,7 @@ class _HomePageState extends State<HomePage> {
                                       : "Budget ${userProvider.budegtMax} ${userProvider.currencySymbole}",
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
-                                    fontSize: 16,
+                                    fontSize: screenWith * 0.042,
                                     color: Colors.white,
                                   ),
                                 ),
@@ -156,7 +158,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
 
-                    SizedBox(height: 45),
+                    SizedBox(height: screenHeigth * 0.048),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -164,7 +166,7 @@ class _HomePageState extends State<HomePage> {
                           "Dernières dépenses",
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            fontSize: 14,
+                            fontSize: screenWith * 0.036,
                             color: Colors.black,
                           ),
                         ),
@@ -174,7 +176,7 @@ class _HomePageState extends State<HomePage> {
                             "Tout voir",
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
-                              fontSize: 14,
+                              fontSize: screenWith * 0.036,
                               color: AppColors.primary,
                             ),
                           ),
@@ -189,16 +191,18 @@ class _HomePageState extends State<HomePage> {
                                 children: [
                                   Lottie.asset(
                                     "animation/vide.json",
-                                    width: 200,
-                                    height: 200,
+                                    width: screenWith * 0.50,
+                                    height: screenHeigth * 0.25,
+                                   // width: 200,
+                                    //height: 200,
                                     repeat: true,
                                   ),
-                                  SizedBox(height: 4),
+                                  SizedBox(height: screenHeigth * 0.003),
                                   Text(
                                     "Acune dépenses actuellement",
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
-                                      fontSize: 14,
+                                      fontSize: screenWith * 0.036,
                                       color: Colors.grey,
                                     ),
                                   ),
@@ -207,7 +211,7 @@ class _HomePageState extends State<HomePage> {
                             )
                           : ListView.separated(
                               separatorBuilder: (context, index) =>
-                                  SizedBox(height: 9),
+                                  SizedBox(height: screenHeigth * 0.011),
                               itemCount: budgetProvider.listDepenses.length,
                               itemBuilder: (context, index) {
                                 final d = budgetProvider.listDepenses[index];
@@ -228,33 +232,33 @@ class _HomePageState extends State<HomePage> {
                                 );
                                 return Container(
                                   width: double.infinity,
-                                  height: 83,
+                                  height: screenHeigth * 0.11,
                                   decoration: BoxDecoration(
                                     color: Colors.white,
-                                    borderRadius: BorderRadius.circular(14),
+                                    borderRadius: BorderRadius.circular(screenWith * 0.034),
                                   ),
 
                                   child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
+                                    padding: const EdgeInsets.all(13.0),
                                     child: Row(
                                       children: [
                                         Container(
-                                          height: 40,
-                                          width: 40,
+                                          height: screenHeigth * 0.052,
+                                          width: screenWith * 0.11,
                                           decoration: BoxDecoration(
                                             color: bgIcon,
                                             borderRadius: BorderRadius.circular(
-                                              14,
+                                              screenWith * 0.034,
                                             ),
                                           ),
                                           child: Icon(
                                             catIcon,
-                                            size: 20,
+                                            size: screenWith * 0.060,
                                             color: iconColor,
                                           ),
                                         ),
 
-                                        SizedBox(width: 10),
+                                        SizedBox(width: screenWith * 0.028),
 
                                         Expanded(
                                           child: Column(

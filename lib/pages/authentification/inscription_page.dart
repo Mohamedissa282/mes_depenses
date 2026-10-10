@@ -18,6 +18,8 @@ class _InscriptionPageState extends State<InscriptionPage> {
   bool _obscurePassword = true;
   @override
   Widget build(BuildContext context) {
+    double screenWith = MediaQuery.of(context).size.width;
+    double screenHeigth = MediaQuery.of(context).size.height;
     return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -26,10 +28,10 @@ class _InscriptionPageState extends State<InscriptionPage> {
             style: TextStyle(
               color: Colors.black,
               fontWeight: FontWeight.bold,
-              fontSize: 15,
+              fontSize: screenWith * 0.036,
             ),
           ),
-          SizedBox(height: 3),
+          SizedBox(height:screenHeigth * 0.006),
           TextFormField(
             controller: widget.nomController,
             validator: (value) {
@@ -39,27 +41,27 @@ class _InscriptionPageState extends State<InscriptionPage> {
             },
             decoration: InputDecoration(
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(11),
+                borderRadius: BorderRadius.circular(screenWith * 0.025),
                 borderSide: BorderSide(color: AppColors.border),
               ),
               focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: AppColors.border),
-                borderRadius: BorderRadius.circular(11),
+                borderRadius: BorderRadius.circular(screenWith * 0.025),
               ),
               hintText: "entrez votre nom",
               prefixIcon: Icon(Icons.person),
             ),
           ),
-          SizedBox(height: 15),
+          SizedBox(height: screenHeigth * 0.016),
           Text(
             "E-mail",
             style: TextStyle(
               color: Colors.black,
               fontWeight: FontWeight.bold,
-              fontSize: 15,
+              fontSize: screenWith * 0.036,
             ),
           ),
-          SizedBox(height: 3),
+          SizedBox(height: screenHeigth * 0.006),
           TextFormField(
             controller: widget.eamilController,
             validator: (value) {
@@ -75,28 +77,28 @@ class _InscriptionPageState extends State<InscriptionPage> {
             },
             decoration: InputDecoration(
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(11),
+                borderRadius: BorderRadius.circular(screenWith * 0.025),
                 borderSide: BorderSide(color: AppColors.border),
               ),
               focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: AppColors.border),
-                borderRadius: BorderRadius.circular(11),
+                borderRadius: BorderRadius.circular(screenWith * 0.025),
               ),
               hintText: "nom@example.com",
               prefixIcon: Icon(Icons.email),
             ),
           ),
-          SizedBox(height: 15),
+          SizedBox(height: screenHeigth * 0.016),
 
           Text(
             "Mot de passe",
             style: TextStyle(
               color: Colors.black,
               fontWeight: FontWeight.bold,
-              fontSize: 15,
+              fontSize: screenWith * 0.036,
             ),
           ),
-          SizedBox(height: 3),
+          SizedBox(height: screenHeigth * 0.006),
           TextFormField(
             
             obscureText: _obscurePassword,
@@ -124,12 +126,12 @@ class _InscriptionPageState extends State<InscriptionPage> {
               ),
               prefixIcon: Icon(Icons.lock_outline),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(11),
+                borderRadius: BorderRadius.circular(screenWith * 0.025),
                 borderSide: BorderSide(color: AppColors.border),
               ),
               focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: AppColors.border),
-                borderRadius: BorderRadius.circular(11),
+                borderRadius: BorderRadius.circular(screenWith * 0.025),
               ),
             ),
           ),

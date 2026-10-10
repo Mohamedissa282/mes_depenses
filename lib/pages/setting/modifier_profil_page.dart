@@ -55,6 +55,8 @@ class _ModifierProfilPageState extends State<ModifierProfilPage> {
 
   @override
   Widget build(BuildContext context) {
+    double screenWith = MediaQuery.of(context).size.width;
+    double screenHeigth = MediaQuery.of(context).size.height;
     final userProvider = Provider.of<UserProvider>(context);
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -67,7 +69,7 @@ class _ModifierProfilPageState extends State<ModifierProfilPage> {
       ),
 
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 30),
+        padding: EdgeInsets.symmetric(horizontal: screenWith * 0.039, vertical: screenHeigth * 0.045),
         child: SingleChildScrollView(
           child: Form(
             key: key,
@@ -77,11 +79,11 @@ class _ModifierProfilPageState extends State<ModifierProfilPage> {
                 Align(
                   alignment: AlignmentGeometry.center,
                   child: Container(
-                    height: 80,
-                    width: 80,
+                    height: screenHeigth * 0.088,
+                    width: screenWith * 0.19,
                     decoration: BoxDecoration(
                       color: AppColors.primary,
-                      borderRadius: BorderRadius.circular(40),
+                      borderRadius: BorderRadius.circular(screenWith * 0.090),
                     ),
                     child: Center(
                       child: Text(
@@ -89,22 +91,22 @@ class _ModifierProfilPageState extends State<ModifierProfilPage> {
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
-                          fontSize: 25,
+                          fontSize: screenWith * 0.070,
                         ),
                       ),
                     ),
                   ),
                 ),
-                SizedBox(height: 40),
+                SizedBox(height: screenHeigth * 0.066),
                 Text(
                   "Nom",
                   style: TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.bold,
-                    fontSize: 15,
+                    fontSize: screenWith * 0.038,
                   ),
                 ),
-                SizedBox(height: 7),
+                SizedBox(height: screenHeigth * 0.012),
                 TextFormField(
                   controller: nomController,
                   validator: (value) {
@@ -114,28 +116,28 @@ class _ModifierProfilPageState extends State<ModifierProfilPage> {
                   },
                   decoration: InputDecoration(
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(11),
+                      borderRadius: BorderRadius.circular(screenWith * 0.025),
                       borderSide: BorderSide(color: AppColors.border),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(color: AppColors.border),
-                      borderRadius: BorderRadius.circular(11),
+                      borderRadius: BorderRadius.circular(screenWith * 0.025),
                     ),
                     hintText: "entrez votre nom",
                     prefixIcon: Icon(Icons.person),
                   ),
                 ),
 
-                SizedBox(height: 26),
+                SizedBox(height: screenHeigth * 0.027),
                 Text(
                   "Saisir nouvelle budget max",
                   style: TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.bold,
-                    fontSize: 15,
+                    fontSize: screenWith * 0.038,
                   ),
                 ),
-                SizedBox(height: 7),
+                SizedBox(height: screenHeigth * 0.012),
                 TextFormField(
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -143,10 +145,7 @@ class _ModifierProfilPageState extends State<ModifierProfilPage> {
                     }
                   },
                   controller: budgetController,
-                  /* onChanged: (value) {
-                double budget = double.tryParse(value) ?? 0.0;
-                userProvider.addBudget(budget);
-              },*/
+                 
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
@@ -158,13 +157,13 @@ class _ModifierProfilPageState extends State<ModifierProfilPage> {
                     filled: true,
                     fillColor: Colors.grey[400],
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15),
+                      borderRadius: BorderRadius.circular(screenWith * 0.027),
                       borderSide: BorderSide.none,
                     ),
                   ),
                 ),
 
-                SizedBox(height: 250),
+                SizedBox(height: screenHeigth * 0.30),
                 InkWell(
                   onTap: () {
                     if (key.currentState!.validate()) {

@@ -163,38 +163,38 @@ class _ConnexionInscriptionPageState extends State<ConnexionInscriptionPage> {
       backgroundColor: AppColors.background,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+          padding: EdgeInsets.symmetric(horizontal: screenWith * 0.07, vertical: screenHeigth * 0.03),
           child: SingleChildScrollView(
             child: Form(
               key: key,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(height: 30),
+                  SizedBox(height: screenHeigth * 0.03),
                   Container(
-                    height: 50,
-                    width: 50,
+                    height: screenHeigth * 0.06,
+                    width: screenWith * 0.12,
                     decoration: BoxDecoration(
                       color: AppColors.primary,
-                      borderRadius: BorderRadius.circular(11),
+                      borderRadius: BorderRadius.circular(screenWith * 0.03),
                     ),
                     child: Icon(
                       Icons.trending_up,
                       color: Colors.white,
-                      size: 22,
+                      size: screenWith * 0.06,
                     ),
                   ),
-                  SizedBox(height: 23),
+                  SizedBox(height: screenHeigth * 0.02),
 
                   Text(
                     "Content de te revoir",
                     style: TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.bold,
-                      fontSize: 24,
+                      fontSize: screenWith * 0.064,
                     ),
                   ),
-                  SizedBox(height: 4),
+                  SizedBox(height: screenHeigth * 0.002),
                   Text(
                     isLogin
                         ? "Connectez-vous pour suivre vos dépenses."
@@ -202,18 +202,18 @@ class _ConnexionInscriptionPageState extends State<ConnexionInscriptionPage> {
                     style: TextStyle(
                       color: Colors.grey,
                       fontWeight: FontWeight.bold,
-                      fontSize: 14,
+                      fontSize: screenWith * 0.037,
                     ),
                   ),
-                  SizedBox(height: 30),
+                  SizedBox(height: screenHeigth * 0.036),
 
                   Container(
                     decoration: BoxDecoration(
                       color: AppColors.tabBackground,
-                      borderRadius: BorderRadius.circular(11),
+                      borderRadius: BorderRadius.circular(screenWith * 0.03),
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: EdgeInsets.all(screenWith * 0.02),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -225,14 +225,14 @@ class _ConnexionInscriptionPageState extends State<ConnexionInscriptionPage> {
                                 });
                               },
                               child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 12,
+                                padding:  EdgeInsets.symmetric(
+                                  vertical: screenHeigth * 0.015,
                                 ),
                                 decoration: BoxDecoration(
                                   color: isLogin
                                       ? Colors.white
                                       : AppColors.tabBackground,
-                                  borderRadius: BorderRadius.circular(11),
+                                  borderRadius: BorderRadius.circular(screenWith * 0.022),
                                 ),
                                 child: Center(
                                   child: Text(
@@ -240,14 +240,14 @@ class _ConnexionInscriptionPageState extends State<ConnexionInscriptionPage> {
                                     style: TextStyle(
                                       color: Colors.black,
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 16,
+                                      fontSize: screenWith * 0.042,
                                     ),
                                   ),
                                 ),
                               ),
                             ),
                           ),
-                          SizedBox(width: 10),
+                          SizedBox(width: screenHeigth * 0.015),
                           Expanded(
                             child: InkWell(
                               onTap: () {
@@ -256,14 +256,14 @@ class _ConnexionInscriptionPageState extends State<ConnexionInscriptionPage> {
                                 });
                               },
                               child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 12,
+                                padding:  EdgeInsets.symmetric(
+                                  vertical: screenHeigth * 0.015,
                                 ),
                                 decoration: BoxDecoration(
                                   color: isLogin
                                       ? AppColors.tabBackground
                                       : Colors.white,
-                                  borderRadius: BorderRadius.circular(11),
+                                  borderRadius: BorderRadius.circular(screenWith * 0.022),
                                 ),
                                 child: Center(
                                   child: Text(
@@ -271,7 +271,7 @@ class _ConnexionInscriptionPageState extends State<ConnexionInscriptionPage> {
                                     style: TextStyle(
                                       color: Colors.black,
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 16,
+                                      fontSize: screenWith * 0.042,
                                     ),
                                   ),
                                 ),
@@ -282,7 +282,7 @@ class _ConnexionInscriptionPageState extends State<ConnexionInscriptionPage> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 25),
+                  SizedBox(height: screenHeigth * 0.03),
                   isLogin
                       ? Connexion(
                           emailController: emailController,
@@ -294,7 +294,7 @@ class _ConnexionInscriptionPageState extends State<ConnexionInscriptionPage> {
                           passwordController: passwordController,
                         ),
 
-                  SizedBox(height: isLogin ? 90 : 65),
+                  SizedBox(height: isLogin ? screenHeigth * 0.099 : screenHeigth * 0.074),
                   InkWell(
                     onTap: () {
                       if (key.currentState!.validate()) {
@@ -302,28 +302,28 @@ class _ConnexionInscriptionPageState extends State<ConnexionInscriptionPage> {
                       }
                     },
                     child: Container(
-                      height: 50,
+                      height: screenHeigth * 0.062,
                       width: double.infinity,
                       decoration: BoxDecoration(
                         color: AppColors.primary,
-                        borderRadius: BorderRadius.circular(15),
+                        borderRadius: BorderRadius.circular(screenWith * 0.03),
                       ),
                       child: Center(
                         child: isLoading
-                            ? const SizedBox(
-                                width: 22,
-                                height: 22,
+                            ? SizedBox(
+                                width: screenWith * 0.06,
+                                height: screenHeigth * 0.028,
                                 child: CircularProgressIndicator(
-                                  strokeWidth: 2.5,
+                                  strokeWidth: screenWith * 0.005,
                                   color: Colors.white,
                                 ),
                               )
                             : Text(
                                 isLogin ? "Se connecter" : "Créer votre compte",
-                                style: const TextStyle(
+                                style:  TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 15,
+                                  fontSize: screenWith * 0.040 ,
                                 ),
                               ),
                       ),

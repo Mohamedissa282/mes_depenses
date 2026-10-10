@@ -10,29 +10,31 @@ import 'package:mes_depenses/connexion.dart';
 import 'package:mes_depenses/pages/questions/questions_page.dart';
 import 'package:mes_depenses/pages/home/home_page.dart';
 import 'package:mes_depenses/provider/budget_provider.dart';
+import 'package:mes_depenses/provider/language_provider.dart';
 import 'package:mes_depenses/provider/monaie_budget.dart';
 import 'package:mes_depenses/provider/user_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+
+import 'generated/l10n.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-await initializeDateFormatting('fr_FR', null);
- 
+  await initializeDateFormatting('fr_FR', null);
+
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => MonaieBudget()),
-        ChangeNotifierProvider(create: (_)=> UserProvider()),
-        ChangeNotifierProvider(create: (_)=> Budgetprovider())
-       
+        ChangeNotifierProvider(create: (_) => UserProvider()),
+        ChangeNotifierProvider(create: (_) => Budgetprovider()),
+        ChangeNotifierProvider(create: (_) => LanguageProvider()),
       ],
-      child:  MyApp(
-       
-      ),
+      child: MyApp(),
     ),
-    
-    );
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -42,6 +44,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      locale: Provider.of<LanguageProvider>(context).local,
+
+      localizationsDelegates: [
+        S.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: S.delegate.supportedLocales,
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
 

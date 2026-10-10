@@ -72,6 +72,8 @@ class _AjouteDepenseState extends State<AjouteDepense> {
 
   @override
   Widget build(BuildContext context) {
+    double screenWith = MediaQuery.of(context).size.width;
+    double screenHeigth = MediaQuery.of(context).size.height;
     final budgetProvider = Provider.of<Budgetprovider>(
         context,
         
@@ -84,7 +86,7 @@ class _AjouteDepenseState extends State<AjouteDepense> {
       backgroundColor: AppColors.background,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 27),
+          padding: EdgeInsets.symmetric(horizontal:screenWith * 0.043 , vertical: screenHeigth * 0.040),
           child: SingleChildScrollView(
             child: Form(
               key: key,
@@ -93,18 +95,18 @@ class _AjouteDepenseState extends State<AjouteDepense> {
                 children: [
                   Text(
                     "Nouvelle dépense",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: screenWith * 0.044),
                   ),
-                  SizedBox(height: 14),
+                  SizedBox(height: screenHeigth * 0.015),
                   Text(
                     "Veuillez sasir le montant",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 14,
+                      fontSize: screenWith * 0.036,
                       color: Colors.grey,
                     ),
                   ),
-                  SizedBox(height: 6),
+                  SizedBox(height: screenHeigth * 0.010),
                   TextFormField(
                     controller: montantController,
                     validator: (value) {
@@ -124,21 +126,21 @@ class _AjouteDepenseState extends State<AjouteDepense> {
                       filled: true,
                       fillColor: Colors.white,
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15),
+                        borderRadius: BorderRadius.circular(screenWith * 0.032),
                         borderSide: BorderSide.none,
                       ),
                     ),
                   ),
 
-                  SizedBox(height: 30),
+                  SizedBox(height: screenHeigth * 0.040),
                   Text(
                     "Catégorie",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: screenWith * 0.040),
                   ),
-                  SizedBox(height: 10),
+                  SizedBox(height: screenHeigth * 0.010),
                   Wrap(
-                    spacing: 9,
-                    runSpacing: 10,
+                    spacing: screenWith * 0.016,
+                    runSpacing: screenHeigth * 0.012,
                     children: [
                       Categorie("Sorties"),
                       Categorie("Études"),
@@ -149,13 +151,13 @@ class _AjouteDepenseState extends State<AjouteDepense> {
                       Categorie("Autres"),
                     ],
                   ),
-                  SizedBox(height: 32),
+                  SizedBox(height: screenHeigth * 0.046),
 
                   Text(
                     "Note(facultatif)",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: screenWith * 0.040),
                   ),
-                  SizedBox(height: 8),
+                  SizedBox(height: screenHeigth * 0.012),
                   TextFormField(
                     controller: noteController,
                     style: TextStyle(
@@ -169,28 +171,28 @@ class _AjouteDepenseState extends State<AjouteDepense> {
                       filled: true,
                       fillColor: Colors.white,
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15),
+                        borderRadius: BorderRadius.circular(screenWith * 0.032),
                         borderSide: BorderSide.none,
                       ),
                     ),
                   ),
-                   SizedBox(height: 80),
+                   SizedBox(height: screenHeigth * 0.13),
 
                   Container(
-                    height: 40,
+                    height: screenHeigth * 0.055,
                     width: double.infinity,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
+                      borderRadius: BorderRadius.circular(screenWith * 0.032),
                       color: Color(0xFFD9EEE9),
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.all(11.0),
+                      padding:  EdgeInsets.all(11.0),
                       child: Center(
                         child: Text(
                           "Il vous restera ${budgetProvider.resteBudget} ${userProvider.currencySymbole} pour mois ${moisActuel}",
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            fontSize: 15,
+                            fontSize: screenWith * 0.038,
                             color: AppColors.primaryLight
                           ),
                         ),
@@ -198,7 +200,7 @@ class _AjouteDepenseState extends State<AjouteDepense> {
                     ),
                   ),
 
-                  SizedBox(height: 22),
+                  SizedBox(height: screenHeigth * 0.020),
                   InkWell(
                     onTap: () {
                       if (key.currentState!.validate()) {
@@ -211,11 +213,11 @@ class _AjouteDepenseState extends State<AjouteDepense> {
                       }
                     },
                     child: Container(
-                      height: 50,
+                      height: screenHeigth * 0.062,
                       width: double.infinity,
                       decoration: BoxDecoration(
                         color: Colors.black,
-                        borderRadius: BorderRadius.circular(15),
+                        borderRadius: BorderRadius.circular(screenWith * 0.032),
                       ),
                       child: Center(
                         child: isLoading
@@ -232,7 +234,7 @@ class _AjouteDepenseState extends State<AjouteDepense> {
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 15,
+                                  fontSize: screenWith * 0.040,
                                 ),
                               ),
                       ),
@@ -248,6 +250,8 @@ class _AjouteDepenseState extends State<AjouteDepense> {
   }
 
   Widget Categorie(String nom) {
+     double screenWith = MediaQuery.of(context).size.width;
+    double screenHeigth = MediaQuery.of(context).size.height;
     bool isSelected = selectedCategorie == nom;
     return InkWell(
       onTap: () {
@@ -256,11 +260,11 @@ class _AjouteDepenseState extends State<AjouteDepense> {
         });
       },
       child: Container(
-        height: 40,
-        width: 100,
+        height: screenHeigth * 0.053,
+        width: screenWith * 0.21,
         decoration: BoxDecoration(
           color: isSelected ? AppColors.primary : Colors.white,
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(screenWith * 0.065),
         ),
         child: Center(
           child: Text(

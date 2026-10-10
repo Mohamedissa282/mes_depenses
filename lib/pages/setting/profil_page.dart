@@ -1,8 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mes_depenses/color.dart';
+import 'package:mes_depenses/generated/l10n.dart';
 import 'package:mes_depenses/pages/authentification/connexion_inscription_page.dart';
 import 'package:mes_depenses/pages/setting/modifier_profil_page.dart';
+import 'package:mes_depenses/provider/language_provider.dart';
 import 'package:mes_depenses/provider/user_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -16,9 +18,12 @@ class ProfilPage extends StatefulWidget {
 class _SettingPageState extends State<ProfilPage> {
   bool isActive = false;
   void afficherChoixLangue() {
+    double screenWith = MediaQuery.of(context).size.width;
+    double screenHeigth = MediaQuery.of(context).size.height;
+    final langueProvider = Provider.of<LanguageProvider>(context, listen: false);
     showModalBottomSheet(
       context: context,
-      shape: const RoundedRectangleBorder(
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
       builder: (ctx) {
@@ -29,18 +34,23 @@ class _SettingPageState extends State<ProfilPage> {
             children: [
               Text(
                 "Langue",
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                style: TextStyle(
+                  fontSize: screenWith * 0.045,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-              SizedBox(height: 8),
+              //  SizedBox(height:screenHeigth * 0.045),
               ListTile(
                 leading: Icon(Icons.language),
                 title: Text(
                   "Francais",
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
-                trailing: Icon(Icons.check, color: Colors.green),
+                trailing: langueProvider.local.languageCode =="fr" ? Icon(Icons.check, color: Colors.green) : null,
 
-                onTap: () {},
+                onTap: () {
+                  langueProvider.changeLangue("fr");
+                },
               ),
               ListTile(
                 leading: Icon(Icons.language),
@@ -48,8 +58,10 @@ class _SettingPageState extends State<ProfilPage> {
                   "Anglais",
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
-                trailing: Icon(Icons.check, color: Colors.green),
-                onTap: () {},
+                trailing: langueProvider.local.languageCode == "en" ? Icon(Icons.check, color: Colors.green) : null,
+                onTap: () {
+                  langueProvider.changeLangue("en");
+                },
               ),
             ],
           ),
@@ -60,291 +72,314 @@ class _SettingPageState extends State<ProfilPage> {
 
   @override
   Widget build(BuildContext context) {
+    double screenWith = MediaQuery.of(context).size.width;
+    double screenHeigth = MediaQuery.of(context).size.height;
     final userProvider = Provider.of<UserProvider>(context);
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 22),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "Profil",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final screenWith = MediaQuery.of(context).size.width;
+
+            return SingleChildScrollView(
+              padding: EdgeInsets.symmetric(
+                horizontal: screenWith * 0.042,
+                vertical: 16,
               ),
-              SizedBox(height: 15),
-              Container(
-                width: double.infinity,
-                height: 80,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(13),
-                ),
-                child: ListTile(
-                  leading: CircleAvatar(
-                    backgroundColor: AppColors.primary,
-                    child: Text(
-                      userProvider.nom[0].toUpperCase(),
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        fontSize: 21,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // "Profil"
+                  Text(
+                    S.of(context).title1,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: screenWith * 0.055,
+                    ),
+                  ),
+
+                  const SizedBox(height: 16),
+
+                  // CARTE PROFIL
+                  Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: ListTile(
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
+                      leading: CircleAvatar(
+                        backgroundColor: AppColors.primary,
+                        child: Text(
+                          userProvider.nom.isNotEmpty
+                              ? userProvider.nom[0].toUpperCase()
+                              : "?",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            fontSize: screenWith * 0.053,
+                          ),
+                        ),
+                      ),
+                      trailing: IconButton(
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => ModifierProfilPage(),
+                            ),
+                          );
+                        },
+                        icon: Icon(Icons.edit, size: screenWith * 0.053),
+                      ),
+                      title: Text(
+                        userProvider.nom,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                          fontSize: screenWith * 0.046,
+                        ),
+                      ),
+                      subtitle: Text(
+                        userProvider.email,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey,
+                        ),
                       ),
                     ),
                   ),
-                  trailing: IconButton(
-                    onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(builder: (_) => ModifierProfilPage()),
-                      );
-                    },
-                    icon: Icon(Icons.edit,size: 20,),
-                  ),
-                  title: Text(
-                    Provider.of<UserProvider>(context).nom,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                      fontSize: 16,
-                    ),
-                  ),
 
-                  subtitle: Text(
-                    Provider.of<UserProvider>(context).email,
+                  const SizedBox(height: 20),
+
+                  // MONNAIE
+                  Text(
+                    "MONNAIE",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
+                      fontSize: screenWith * 0.039,
                       color: Colors.grey,
                     ),
                   ),
-                ),
-              ),
-              SizedBox(height: 15),
-              Text(
-                "MONNAIE",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14,
-                  color: Colors.grey,
-                ),
-              ),
-              SizedBox(height: 7),
-              Container(
-                width: double.infinity,
-                height: 80,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(13),
-                ),
-                child: ListTile(
-                  leading: CircleAvatar(
-                    backgroundColor: AppColors.primary,
-                    child: Text(
-                      userProvider.currencySymbole,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
+
+                  const SizedBox(height: 8),
+
+                  Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: ListTile(
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
+                      leading: CircleAvatar(
+                        backgroundColor: AppColors.primary,
+                        child: Text(
+                          userProvider.currencySymbole,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                      title: Text(
+                        userProvider.currencyName,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                      subtitle: const Text(
+                        "Monnaie principale",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey,
+                        ),
                       ),
                     ),
                   ),
-                  title: Text(
-                    userProvider.currencyName,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
 
-                  subtitle: Text(
-                    "Monnaie principale",
+                  const SizedBox(height: 20),
+
+                  // PRÉFÉRENCES
+                  Text(
+                    "PRÉFÉRENCES",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
+                      fontSize: screenWith * 0.039,
                       color: Colors.grey,
                     ),
                   ),
-                ),
-              ),
-              SizedBox(height: 15),
-              Text(
-                "PREFERNCES",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14,
-                  color: Colors.grey,
-                ),
-              ),
-              SizedBox(height: 7),
 
-              Expanded(
-                child: Container(
-                  width: double.infinity,
-                  // height: 80,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(13),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(1.0),
+                  const SizedBox(height: 8),
+
+                  // CARTE DES PRÉFÉRENCES
+                  Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
                       children: [
+                        // NOTIFICATIONS
                         ListTile(
-                          leading: CircleAvatar(
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 4,
+                          ),
+                          leading: const CircleAvatar(
                             backgroundColor: Color(0xFFD9EEE9),
                             child: Icon(
                               Icons.notifications_outlined,
                               color: Color(0xFF0B6B5D),
                             ),
                           ),
-                          title: Text(
+                          title: const Text(
                             "Notifications",
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               color: Colors.black,
                             ),
                           ),
-
                           subtitle: Text(
-                            "Alerte si tu dépasse ton budget",
+                            "Alerte si tu dépasses ton budget",
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               color: Colors.grey,
-                              fontSize: 12,
+                              fontSize: screenWith * 0.031,
                             ),
                           ),
-                          trailing: Transform.scale(
-                            scale: 0.75,
-                            child: Switch(
-                              activeThumbColor: Colors.white,
-                              activeTrackColor: AppColors.primaryLight,
-
-                              value: isActive,
-                              onChanged: (val) {
-                                setState(() {
-                                  isActive = !isActive;
-                                });
-                              },
-                            ),
+                          trailing: Switch(
+                            activeThumbColor: Colors.white,
+                            activeTrackColor: AppColors.primaryLight,
+                            value: isActive,
+                            onChanged: (val) {
+                              setState(() {
+                                isActive = val;
+                              });
+                            },
                           ),
                         ),
 
-                        Divider(),
+                        Divider(height: 1, indent: 16, endIndent: 16),
 
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                CircleAvatar(
-                                  backgroundColor: Color(0xFFD9EEE9),
-                                  child: Icon(
-                                    Icons.language,
-                                    color: Color(0xFF0B6B5D),
-                                  ),
-                                ),
-                                SizedBox(width: 9),
-                                Text(
-                                  "Langue",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                              ],
+                        // LANGUE
+                        ListTile(
+                          contentPadding: EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 4,
+                          ),
+                          leading: CircleAvatar(
+                            backgroundColor: Color(0xFFD9EEE9),
+                            child: Icon(
+                              Icons.language,
+                              color: Color(0xFF0B6B5D),
                             ),
-
-                            Row(
-                              children: [
-                                Text(
-                                  "Français",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                IconButton(
-                                  onPressed: () {
-                                    afficherChoixLangue();
-                                  },
-                                  icon: Icon(Icons.chevron_right),
-                                ),
-                              ],
+                          ),
+                          title: Text(
+                            "Langue",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
                             ),
-                          ],
+                          ),
+                          trailing: InkWell(
+                            onTap: () {
+                              afficherChoixLangue();
+                            },
+                            child: Text(
+                              "Français",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                                fontSize: screenWith * 0.037,
+                              ),
+                            ),
+                          ),
                         ),
                       ],
                     ),
                   ),
-                ),
-              ),
-              SizedBox(height: 40),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 55),
-                child: InkWell(
-                  onTap: () async {
-                    await FirebaseAuth.instance.signOut();
-                    if (!context.mounted) return;
-                    Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute(
-                        builder: (_) => ConnexionInscriptionPage(),
-                      ),
-                      (route) => false,
-                    );
-                  },
-                  child: Container(
+
+                  const SizedBox(height: 24),
+
+                  // DÉCONNEXION
+                  SizedBox(
                     width: double.infinity,
-                    height: 48,
+                    height: 56,
+                    child: OutlinedButton.icon(
+                      onPressed: () async {
+                        await FirebaseAuth.instance.signOut();
 
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(13),
-                      border: Border.all(color: Colors.redAccent, width: 1),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.logout, color: Colors.red),
-                        SizedBox(width: 7),
-                        Text(
-                          "Se déconnecter",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.red,
+                        if (!context.mounted) return;
+
+                        Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(
+                            builder: (_) => ConnexionInscriptionPage(),
                           ),
+                          (route) => false,
+                        );
+                      },
+                      icon: const Icon(Icons.logout, color: Colors.redAccent),
+                      label: const Text(
+                        "Se déconnecter",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.redAccent,
                         ),
-                      ],
+                      ),
+                      style: OutlinedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        side: const BorderSide(color: Colors.redAccent),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
                     ),
                   ),
-                ),
-              ),
 
-              Center(
-                child: Container(
-                  margin: EdgeInsets.only(bottom: 55),
-                  child: Column(
-                    children: [
-                      Text(
-                        "Mes Dépenses",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                          fontSize: 15,
-                        ),
+                  const SizedBox(height: 40),
+
+                  // INFORMATIONS DE L'APPLICATION
+                  Center(
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 16),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            "Mes Dépenses",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                              fontSize: screenWith * 0.041,
+                            ),
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            "Version 1.0.0",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ],
                       ),
-                      SizedBox(height: 5),
-                      Text(
-                        "Version 1.0.0",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.grey,
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
-                ),
+                ],
               ),
-            ],
-          ),
+            );
+          },
         ),
       ),
     );

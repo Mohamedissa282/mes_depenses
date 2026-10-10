@@ -14,21 +14,23 @@ class _Question2State extends State<Question2> {
 
   @override
   Widget build(BuildContext context) {
+     double screenWith = MediaQuery.of(context).size.width;
+    double screenHeigth = MediaQuery.of(context).size.height;
     final userProvider = Provider.of<MonaieBudget>(context, listen: false);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           "Quelle est ton budget maximum par mois ?",
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: screenWith * 0.043),
         ),
-        SizedBox(height: 6),
+        SizedBox(height: screenHeigth * 0.005),
 
         Text(
           "Tu pourras le modifier à tout moment.",
           style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
         ),
-        SizedBox(height: 20),
+        SizedBox(height: screenHeigth * 0.026),
         TextFormField(
           validator: (value) {
             if (value == null || value.isEmpty) {
@@ -48,7 +50,7 @@ class _Question2State extends State<Question2> {
             filled: true,
             fillColor: Colors.grey[400],
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(15),
+              borderRadius: BorderRadius.circular(screenWith * 0.037),
               borderSide: BorderSide.none,
             ),
           ),

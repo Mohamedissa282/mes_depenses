@@ -128,6 +128,9 @@ class _HistoriquePageState extends State<HistoriquePage> {
   @override
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context);
+    double screenWith = MediaQuery.of(context).size.width;
+    double screenHeigth = MediaQuery.of(context).size.height;
+
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
@@ -138,54 +141,63 @@ class _HistoriquePageState extends State<HistoriquePage> {
             children: [
               Text(
                 "Historique",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
-              ),
-
-              SizedBox(height: 14),
-
-              isLoding ? CircularProgressIndicator() : 
-              SizedBox(
-                height: 40,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: moisList.length,
-                  itemBuilder: (context, index) {
-                    final m = moisList[index];
-                    final isSelected = m == moisSelectionne;
-
-                    return GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          moisSelectionne = m;
-                        });
-                        chargerDepensesDuMois(m);
-                      },
-                      child: Container(
-                        margin: EdgeInsets.symmetric(horizontal: 8),
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 8,
-                        ),
-                        decoration: BoxDecoration(
-                          color: isSelected
-                              ? AppColors.primary
-                              : Colors.grey.shade200,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Text(
-                          m,
-                          style: TextStyle(
-                            color: isSelected ? Colors.white : Colors.black,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    );
-                  },
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: screenWith * 0.057,
                 ),
               ),
 
-              SizedBox(height: 30),
+              SizedBox(height: screenHeigth * 0.020),
+
+              isLoding
+                  ? Align(
+                      alignment: AlignmentGeometry.center,
+                      child: CircularProgressIndicator(),
+                    )
+                  : SizedBox(
+                      height: screenHeigth * 0.050,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: moisList.length,
+                        itemBuilder: (context, index) {
+                          final m = moisList[index];
+                          final isSelected = m == moisSelectionne;
+
+                          return GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                moisSelectionne = m;
+                              });
+                              chargerDepensesDuMois(m);
+                            },
+                            child: Container(
+                              margin: EdgeInsets.symmetric(horizontal: screenWith * 0.010),
+                              padding: EdgeInsets.symmetric(
+                                horizontal: screenWith * 0.020,
+                                vertical: screenHeigth * 0.011,
+                              ),
+                              decoration: BoxDecoration(
+                                color: isSelected
+                                    ? AppColors.primary
+                                    : Colors.grey.shade200,
+                                borderRadius: BorderRadius.circular(screenWith * 0.058),
+                              ),
+                              child: Text(
+                                m,
+                                style: TextStyle(
+                                  color: isSelected
+                                      ? Colors.white
+                                      : Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+
+              SizedBox(height: screenHeigth * 0.023),
 
               if (dataGraphique.isNotEmpty)
                 SizedBox(
@@ -212,7 +224,7 @@ class _HistoriquePageState extends State<HistoriquePage> {
                   ),
                 ),
 
-              SizedBox(height: 20),
+              SizedBox(height: screenHeigth * 0.020),
 
               Expanded(
                 child: depenses.isEmpty
@@ -221,16 +233,18 @@ class _HistoriquePageState extends State<HistoriquePage> {
                           children: [
                             Lottie.asset(
                               "animation/vide.json",
-                              width: 200,
-                              height: 200,
+                              width: screenWith * 0.50,
+                              height: screenHeigth * 0.25,
+                              // width: 200,
+                              //height: 200,
                               repeat: true,
                             ),
-                            SizedBox(height: 4),
+                            SizedBox(height: screenHeigth * 0.003),
                             Text(
-                              "Acune historique actuellement",
+                              "Acune dépenses actuellement",
                               textAlign: TextAlign.center,
                               style: TextStyle(
-                                fontSize: 14,
+                                fontSize: screenWith * 0.036,
                                 color: Colors.grey,
                               ),
                             ),
@@ -238,101 +252,103 @@ class _HistoriquePageState extends State<HistoriquePage> {
                         ),
                       )
                     : ListView.separated(
-                        separatorBuilder: (context, index) =>
-                            SizedBox(height: 9),
-                        itemCount: depenses.length,
-                        itemBuilder: (context, index) {
-                          final d = depenses[index];
-                          String categorie = d['categorie'];
-                          String note = d['note'];
-                          final Timestamp timestamp = d['date'];
-                          final DateTime date = timestamp.toDate();
+                              separatorBuilder: (context, index) =>
+                                  SizedBox(height: screenHeigth * 0.011),
+                              itemCount: depenses.length,
+                              itemBuilder: (context, index) {
+                                final d = depenses[index];
+                                String categorie = d['categorie'];
+                                String note = d['note'];
+                                final Timestamp timestamp = d['date'];
+                                final DateTime date = timestamp.toDate();
 
-                          Color bgIcon = BaktaCegoryStyle.getBackground(
-                            categorie,
-                          );
+                                Color bgIcon = BaktaCegoryStyle.getBackground(
+                                  categorie,
+                                );
 
-                          IconData catIcon = BaktaCegoryStyle.getIcon(
-                            categorie,
-                          );
-                          Color iconColor = BaktaCegoryStyle.getIconColor(
-                            categorie,
-                          );
-                          return Container(
-                            width: double.infinity,
-                            height: 83,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(14),
-                            ),
-
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                children: [
-                                  Container(
-                                    height: 40,
-                                    width: 40,
-                                    decoration: BoxDecoration(
-                                      color: bgIcon,
-                                      borderRadius: BorderRadius.circular(14),
-                                    ),
-                                    child: Icon(
-                                      catIcon,
-                                      size: 20,
-                                      color: iconColor,
-                                    ),
+                                IconData catIcon = BaktaCegoryStyle.getIcon(
+                                  categorie,
+                                );
+                                Color iconColor = BaktaCegoryStyle.getIconColor(
+                                  categorie,
+                                );
+                                return Container(
+                                  width: double.infinity,
+                                  height: screenHeigth * 0.11,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(screenWith * 0.034),
                                   ),
 
-                                  SizedBox(width: 10),
-
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(13.0),
+                                    child: Row(
                                       children: [
-                                        Text(
-                                          categorie,
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
+                                        Container(
+                                          height: screenHeigth * 0.052,
+                                          width: screenWith * 0.11,
+                                          decoration: BoxDecoration(
+                                            color: bgIcon,
+                                            borderRadius: BorderRadius.circular(
+                                              screenWith * 0.034,
+                                            ),
+                                          ),
+                                          child: Icon(
+                                            catIcon,
+                                            size: screenWith * 0.060,
+                                            color: iconColor,
                                           ),
                                         ),
-                                        Text(
-                                          note.isNotEmpty
-                                              ? note
-                                              : "aucune note",
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.grey,
+
+                                        SizedBox(width: screenWith * 0.028),
+
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                categorie,
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              Text(
+                                                note.isNotEmpty
+                                                    ? note
+                                                    : "aucune note",
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.grey,
+                                                ),
+                                              ),
+
+                                              Text(
+                                                formatDate(date),
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.grey,
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ),
 
                                         Text(
-                                          formatDate(date),
+                                          "${d['montant']} ${userProvider.currencySymbole}",
                                           style: TextStyle(
                                             fontWeight: FontWeight.bold,
-                                            color: Colors.grey,
+                                            color: Colors.black,
                                           ),
                                         ),
                                       ],
                                     ),
                                   ),
-
-                                  Text(
-                                    "${d['montant']} ${userProvider.currencySymbole}",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                                );
+                              },
                             ),
-                          );
-                        },
-                      ),
               ),
             ],
           ),

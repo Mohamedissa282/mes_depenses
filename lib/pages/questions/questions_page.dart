@@ -78,27 +78,21 @@ class _QuestionsPageState extends State<QuestionsPage> {
 
   @override
   Widget build(BuildContext context) {
+    double screenWith = MediaQuery.of(context).size.width;
+    double screenHeigth = MediaQuery.of(context).size.height;
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(13.0),
+          padding: EdgeInsets.all(screenWith * 0.036),
           child: Form(
             key: key,
             child: Column(
               children: [
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    Container(
-                      height: 40,
-                      width: 40,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                      child: Icon(Icons.arrow_back),
-                    ),
+                   
 
                     SmoothPageIndicator(
                       controller: controller,
@@ -115,12 +109,12 @@ class _QuestionsPageState extends State<QuestionsPage> {
                         fontWeight: FontWeight.bold,
 
                         color: Colors.grey,
-                        fontSize: 18,
+                        fontSize: screenWith * 0.046,
                       ),
                     ),
                   ],
                 ),
-                SizedBox(height: 30),
+                SizedBox(height: screenHeigth * 0.020),
 
                 Expanded(
                   child: PageView(
@@ -152,7 +146,7 @@ class _QuestionsPageState extends State<QuestionsPage> {
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 15,
+                                  fontSize: screenWith * 0.040,
                                 ),
                               ),
                         onTap: () {
@@ -169,7 +163,7 @@ class _QuestionsPageState extends State<QuestionsPage> {
                           style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
-                            fontSize: 15,
+                            fontSize: screenWith * 0.040,
                           ),
                         ),
 
