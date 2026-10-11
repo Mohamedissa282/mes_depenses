@@ -6,9 +6,11 @@ import 'package:intl/intl.dart';
 import 'package:mes_depenses/color.dart';
 import 'package:mes_depenses/provider/budget_provider.dart';
 import 'package:mes_depenses/provider/user_provider.dart';
+import 'package:mes_depenses/services/notification_service.dart';
 import 'package:mes_depenses/widget/awesome_dialog_error.dart';
 import 'package:mes_depenses/widget/awesome_dialog_succes.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AjouteDepense extends StatefulWidget {
   const new({super.key});
@@ -32,14 +34,23 @@ class _AjouteDepenseState extends State<AjouteDepense> {
       setState(() {
         isLoading = true;
       });
-      final uid = Provider.of<UserProvider>(context, listen: false).idUser;
+
+      final budgetProvider = Provider.of<Budgetprovider>(
+        context,
+        listen: false,
+      );
+      final userProvider = Provider.of<UserProvider>(context, listen: false);
+
       DateTime now = DateTime.now();
       String moisActuel = DateFormat('MMMM', 'fr_FR').format(now);
       int anneeActuelle = now.year;
+      double ancienTotal = budgetProvider.totalDepense;
+
+      double ancienPourcentage = (ancienTotal / userProvider.budegtMax) * 100;
 
       await FirebaseFirestore.instance
           .collection("users")
-          .doc(uid)
+          .doc(userProvider.idUser)
           .collection("expenses")
           .add({
             "montant": double.tryParse(montantController.text) ?? 0.0,
@@ -53,17 +64,30 @@ class _AjouteDepenseState extends State<AjouteDepense> {
       setState(() {
         isLoading = false;
       });
-      final budgetProvider = Provider.of<Budgetprovider>(
-        context,
-        listen: false,
-      );
-      final userProvider = Provider.of<UserProvider>(context, listen: false);
 
-      budgetProvider.chargerDepensesDuMois(
+      await budgetProvider.chargerDepensesDuMois(
         userProvider.idUser,
         userProvider.budegtMax,
       );
 
+      double nouvelleTotal = budgetProvider.totalDepense;
+
+      double nouvellePourcentage =
+          (nouvelleTotal / userProvider.budegtMax) * 100;
+
+      print("###################### ${ancienTotal}");
+      print("###################### ${nouvelleTotal}");
+      print("###################### ${ancienPourcentage}");
+      print("###################### ${nouvellePourcentage}");
+
+      if (ancienTotal <= userProvider.budegtMax &&
+          nouvelleTotal > userProvider.budegtMax) {
+        await NotificationService.showBudgetNotification();
+      }
+
+      if (ancienPourcentage < 80 && nouvellePourcentage >= 80) {
+        await NotificationService.show80BudgetNotification();
+      }
       ShowDialogSucces(context, "La dépense à été ajouté avec succes");
     } catch (e) {
       print("###################### ${e}");
@@ -74,11 +98,8 @@ class _AjouteDepenseState extends State<AjouteDepense> {
   Widget build(BuildContext context) {
     double screenWith = MediaQuery.of(context).size.width;
     double screenHeigth = MediaQuery.of(context).size.height;
-    final budgetProvider = Provider.of<Budgetprovider>(
-        context,
-        
-      );
-      final userProvider = Provider.of<UserProvider>(context);
+    final budgetProvider = Provider.of<Budgetprovider>(context);
+    final userProvider = Provider.of<UserProvider>(context);
     DateTime now = DateTime.now();
     String moisActuel = DateFormat('MMMM', 'fr_FR').format(now);
     int anneeActuelle = now.year;
@@ -86,7 +107,10 @@ class _AjouteDepenseState extends State<AjouteDepense> {
       backgroundColor: AppColors.background,
       body: SafeArea(
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal:screenWith * 0.043 , vertical: screenHeigth * 0.040),
+          padding: EdgeInsets.symmetric(
+            horizontal: screenWith * 0.043,
+            vertical: screenHeigth * 0.040,
+          ),
           child: SingleChildScrollView(
             child: Form(
               key: key,
@@ -95,7 +119,10 @@ class _AjouteDepenseState extends State<AjouteDepense> {
                 children: [
                   Text(
                     "Nouvelle dépense",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: screenWith * 0.044),
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: screenWith * 0.044,
+                    ),
                   ),
                   SizedBox(height: screenHeigth * 0.015),
                   Text(
@@ -135,7 +162,10 @@ class _AjouteDepenseState extends State<AjouteDepense> {
                   SizedBox(height: screenHeigth * 0.040),
                   Text(
                     "Catégorie",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: screenWith * 0.040),
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: screenWith * 0.040,
+                    ),
                   ),
                   SizedBox(height: screenHeigth * 0.010),
                   Wrap(
@@ -155,7 +185,10 @@ class _AjouteDepenseState extends State<AjouteDepense> {
 
                   Text(
                     "Note(facultatif)",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: screenWith * 0.040),
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: screenWith * 0.040,
+                    ),
                   ),
                   SizedBox(height: screenHeigth * 0.012),
                   TextFormField(
@@ -176,24 +209,26 @@ class _AjouteDepenseState extends State<AjouteDepense> {
                       ),
                     ),
                   ),
-                   SizedBox(height: screenHeigth * 0.13),
+                  SizedBox(height: screenHeigth * 0.13),
 
                   Container(
-                    height: screenHeigth * 0.055,
+                    height: screenHeigth * 0.065,
                     width: double.infinity,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(screenWith * 0.032),
                       color: Color(0xFFD9EEE9),
                     ),
                     child: Padding(
-                      padding:  EdgeInsets.all(11.0),
+                      padding: EdgeInsets.all(9.0),
                       child: Center(
                         child: Text(
-                          "Il vous restera ${budgetProvider.resteBudget} ${userProvider.currencySymbole} pour mois ${moisActuel}",
+                          budgetProvider.resteBudget <= 0
+                              ? "Vous serez au-dessus de votre budget de ${userProvider.budegtMax} ${userProvider.currencySymbole} ce mois-ci."
+                              : "Il vous restera ${budgetProvider.resteBudget} ${userProvider.currencySymbole} pour mois ${moisActuel}",
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            fontSize: screenWith * 0.038,
-                            color: AppColors.primaryLight
+                            fontSize: screenWith * 0.034,
+                            color: AppColors.primaryLight,
                           ),
                         ),
                       ),
@@ -202,7 +237,7 @@ class _AjouteDepenseState extends State<AjouteDepense> {
 
                   SizedBox(height: screenHeigth * 0.020),
                   InkWell(
-                    onTap: () {
+                    onTap: () async {
                       if (key.currentState!.validate()) {
                         ajouteDepense();
                         montantController.clear();
@@ -250,7 +285,7 @@ class _AjouteDepenseState extends State<AjouteDepense> {
   }
 
   Widget Categorie(String nom) {
-     double screenWith = MediaQuery.of(context).size.width;
+    double screenWith = MediaQuery.of(context).size.width;
     double screenHeigth = MediaQuery.of(context).size.height;
     bool isSelected = selectedCategorie == nom;
     return InkWell(

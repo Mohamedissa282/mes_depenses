@@ -20,13 +20,21 @@ class _ModifierProfilPageState extends State<ModifierProfilPage> {
 
   GlobalKey<FormState> key = GlobalKey();
 
+  @override
+  void initState() {
+    super.initState();
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    nomController.text = userProvider.nom;
+    budgetController.text = userProvider.budegtMax.toString();
+  }
+
   Future<void> modiferProfil() async {
     try {
       setState(() {
         isLoading = true;
       });
       final userProvider = Provider.of<UserProvider>(context, listen: false);
-      
+
       final budgetProvider = Provider.of<Budgetprovider>(
         context,
         listen: false,
@@ -39,7 +47,7 @@ class _ModifierProfilPageState extends State<ModifierProfilPage> {
 
       setState(() {
         isLoading = false;
-       userProvider.setName(nomController.text.trim());
+        userProvider.setName(nomController.text.trim());
 
         userProvider.setBudget(budget);
         budgetProvider.chargerDepensesDuMois(
@@ -64,12 +72,18 @@ class _ModifierProfilPageState extends State<ModifierProfilPage> {
         backgroundColor: AppColors.background,
         title: Text(
           "Modifier Profil",
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: screenWith * 0.046,
+          ),
         ),
       ),
 
       body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: screenWith * 0.039, vertical: screenHeigth * 0.045),
+        padding: EdgeInsets.symmetric(
+          horizontal: screenWith * 0.039,
+          vertical: screenHeigth * 0.045,
+        ),
         child: SingleChildScrollView(
           child: Form(
             key: key,
@@ -79,8 +93,8 @@ class _ModifierProfilPageState extends State<ModifierProfilPage> {
                 Align(
                   alignment: AlignmentGeometry.center,
                   child: Container(
-                    height: screenHeigth * 0.088,
-                    width: screenWith * 0.19,
+                    height: screenHeigth * 0.077,
+                    width: screenWith * 0.17,
                     decoration: BoxDecoration(
                       color: AppColors.primary,
                       borderRadius: BorderRadius.circular(screenWith * 0.090),
@@ -91,7 +105,7 @@ class _ModifierProfilPageState extends State<ModifierProfilPage> {
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
-                          fontSize: screenWith * 0.070,
+                          fontSize: screenWith * 0.066,
                         ),
                       ),
                     ),
@@ -103,7 +117,7 @@ class _ModifierProfilPageState extends State<ModifierProfilPage> {
                   style: TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.bold,
-                    fontSize: screenWith * 0.038,
+                    fontSize: screenWith * 0.036,
                   ),
                 ),
                 SizedBox(height: screenHeigth * 0.012),
@@ -124,6 +138,10 @@ class _ModifierProfilPageState extends State<ModifierProfilPage> {
                       borderRadius: BorderRadius.circular(screenWith * 0.025),
                     ),
                     hintText: "entrez votre nom",
+                    hintStyle: TextStyle(
+                      fontSize: screenWith * 0.034,
+                      color: Colors.grey,
+                    ),
                     prefixIcon: Icon(Icons.person),
                   ),
                 ),
@@ -134,7 +152,7 @@ class _ModifierProfilPageState extends State<ModifierProfilPage> {
                   style: TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.bold,
-                    fontSize: screenWith * 0.038,
+                    fontSize: screenWith * 0.036,
                   ),
                 ),
                 SizedBox(height: screenHeigth * 0.012),
@@ -145,7 +163,7 @@ class _ModifierProfilPageState extends State<ModifierProfilPage> {
                     }
                   },
                   controller: budgetController,
-                 
+
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,

@@ -3,6 +3,7 @@ import 'package:mes_depenses/color.dart';
 import 'package:mes_depenses/pages/acceuil/pages/page1.dart';
 import 'package:mes_depenses/pages/acceuil/pages/page2.dart';
 import 'package:mes_depenses/pages/authentification/connexion_inscription_page.dart';
+import 'package:mes_depenses/services/notification_service.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class AceuilPage extends StatefulWidget {
@@ -16,7 +17,7 @@ class _AceuilPageState extends State<AceuilPage> {
   final PageController controller = PageController();
 
   bool lastPage = false;
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -86,11 +87,14 @@ class _AceuilPageState extends State<AceuilPage> {
                       left: 20,
                       right: 20,
                       child: InkWell(
-                        onTap: () {
-                          controller.nextPage(
+                        onTap: () async{
+                         final ok = await NotificationService.demanderPermission();
+    debugPrint("Permission accordée : $ok");
+    await NotificationService.showBudgetNotification();
+                          /*controller.nextPage(
                             duration: Duration(microseconds: 300),
                             curve: Curves.decelerate,
-                          );
+                          );*/
                         },
                         child: Container(
                           height: 50,

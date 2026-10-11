@@ -6,7 +6,9 @@ import 'package:mes_depenses/pages/authentification/connexion_inscription_page.d
 import 'package:mes_depenses/pages/setting/modifier_profil_page.dart';
 import 'package:mes_depenses/provider/language_provider.dart';
 import 'package:mes_depenses/provider/user_provider.dart';
+import 'package:mes_depenses/services/notification_service.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfilPage extends StatefulWidget {
   const new({super.key});
@@ -16,11 +18,39 @@ class ProfilPage extends StatefulWidget {
 }
 
 class _SettingPageState extends State<ProfilPage> {
-  bool isActive = false;
+  bool notificationsActives = false;
+
+  @override
+  void initState() {
+    super.initState();
+    choixNotification();
+  }
+
+  Future<void> choixNotification() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      notificationsActives = prefs.getBool("notifs_budget") ?? false;
+    });
+  }
+
+  Future<void> changerChoix(bool valeur) async {
+    if (valeur) {
+      await NotificationService.demanderPermission();
+    }
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('notifs_budget', valeur);
+    setState(() {
+      notificationsActives = valeur;
+    });
+  }
+
   void afficherChoixLangue() {
     double screenWith = MediaQuery.of(context).size.width;
     double screenHeigth = MediaQuery.of(context).size.height;
-    final langueProvider = Provider.of<LanguageProvider>(context, listen: false);
+    final langueProvider = Provider.of<LanguageProvider>(
+      context,
+      listen: false,
+    );
     showModalBottomSheet(
       context: context,
       shape: RoundedRectangleBorder(
@@ -46,7 +76,9 @@ class _SettingPageState extends State<ProfilPage> {
                   "Francais",
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
-                trailing: langueProvider.local.languageCode =="fr" ? Icon(Icons.check, color: Colors.green) : null,
+                trailing: langueProvider.local.languageCode == "fr"
+                    ? Icon(Icons.check, color: Colors.green)
+                    : null,
 
                 onTap: () {
                   langueProvider.changeLangue("fr");
@@ -58,7 +90,9 @@ class _SettingPageState extends State<ProfilPage> {
                   "Anglais",
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
-                trailing: langueProvider.local.languageCode == "en" ? Icon(Icons.check, color: Colors.green) : null,
+                trailing: langueProvider.local.languageCode == "en"
+                    ? Icon(Icons.check, color: Colors.green)
+                    : null,
                 onTap: () {
                   langueProvider.changeLangue("en");
                 },
@@ -75,6 +109,10 @@ class _SettingPageState extends State<ProfilPage> {
     double screenWith = MediaQuery.of(context).size.width;
     double screenHeigth = MediaQuery.of(context).size.height;
     final userProvider = Provider.of<UserProvider>(context);
+    final langueProvider = Provider.of<LanguageProvider>(
+      context,
+      listen: false,
+    );
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
@@ -95,7 +133,7 @@ class _SettingPageState extends State<ProfilPage> {
                     S.of(context).title1,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: screenWith * 0.055,
+                      fontSize: screenWith * 0.052,
                     ),
                   ),
 
@@ -141,7 +179,7 @@ class _SettingPageState extends State<ProfilPage> {
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Colors.black,
-                          fontSize: screenWith * 0.046,
+                          fontSize: screenWith * 0.044,
                         ),
                       ),
                       subtitle: Text(
@@ -161,7 +199,7 @@ class _SettingPageState extends State<ProfilPage> {
                     "MONNAIE",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: screenWith * 0.039,
+                      fontSize: screenWith * 0.038,
                       color: Colors.grey,
                     ),
                   ),
@@ -213,7 +251,7 @@ class _SettingPageState extends State<ProfilPage> {
                     "PRÉFÉRENCES",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: screenWith * 0.039,
+                      fontSize: screenWith * 0.038,
                       color: Colors.grey,
                     ),
                   ),
@@ -243,7 +281,7 @@ class _SettingPageState extends State<ProfilPage> {
                               color: Color(0xFF0B6B5D),
                             ),
                           ),
-                          title: const Text(
+                          title:  Text(
                             "Notifications",
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
@@ -261,11 +299,9 @@ class _SettingPageState extends State<ProfilPage> {
                           trailing: Switch(
                             activeThumbColor: Colors.white,
                             activeTrackColor: AppColors.primaryLight,
-                            value: isActive,
+                            value: notificationsActives,
                             onChanged: (val) {
-                              setState(() {
-                                isActive = val;
-                              });
+                              changerChoix(val);
                             },
                           ),
                         ),
@@ -296,8 +332,8 @@ class _SettingPageState extends State<ProfilPage> {
                             onTap: () {
                               afficherChoixLangue();
                             },
-                            child: Text(
-                              "Français",
+                            child: Text( langueProvider.local.languageCode == "fr" ?
+                              "Français" : "Anglais",
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Colors.black,
@@ -310,7 +346,7 @@ class _SettingPageState extends State<ProfilPage> {
                     ),
                   ),
 
-                  const SizedBox(height: 24),
+                SizedBox(height: 24),
 
                   // DÉCONNEXION
                   SizedBox(
@@ -329,8 +365,8 @@ class _SettingPageState extends State<ProfilPage> {
                           (route) => false,
                         );
                       },
-                      icon: const Icon(Icons.logout, color: Colors.redAccent),
-                      label: const Text(
+                      icon: Icon(Icons.logout, color: Colors.redAccent),
+                      label: Text(
                         "Se déconnecter",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
@@ -339,7 +375,7 @@ class _SettingPageState extends State<ProfilPage> {
                       ),
                       style: OutlinedButton.styleFrom(
                         backgroundColor: Colors.white,
-                        side: const BorderSide(color: Colors.redAccent),
+                        side: BorderSide(color: Colors.redAccent),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
@@ -347,9 +383,9 @@ class _SettingPageState extends State<ProfilPage> {
                     ),
                   ),
 
-                  const SizedBox(height: 40),
+                  SizedBox(height: 40),
 
-                  // INFORMATIONS DE L'APPLICATION
+                 
                   Center(
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 16),
