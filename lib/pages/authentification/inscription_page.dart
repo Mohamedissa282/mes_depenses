@@ -49,6 +49,7 @@ class _InscriptionPageState extends State<InscriptionPage> {
                 borderRadius: BorderRadius.circular(screenWith * 0.025),
               ),
               hintText: "entrez votre nom",
+            
               prefixIcon: Icon(Icons.person),
             ),
           ),

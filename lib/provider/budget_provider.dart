@@ -35,7 +35,11 @@ class Budgetprovider with ChangeNotifier {
         .get();
 
     _depensesDuMois = snapshot.docs;
-
+  _depensesDuMois.sort((a, b) {
+      final dateA = (a['date'] as Timestamp).toDate();
+      final dateB = (b['date'] as Timestamp).toDate();
+      return dateB.compareTo(dateA);
+    });
     _totalDepense = 0.0;
     for (var doc in snapshot.docs) {
       _totalDepense += (doc['montant'] as num).toDouble();

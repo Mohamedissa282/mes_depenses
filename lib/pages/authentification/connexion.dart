@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mes_depenses/color.dart';
+import 'package:mes_depenses/pages/authentification/forget_password_page.dart';
 
 class Connexion extends StatefulWidget {
   final TextEditingController? emailController;
@@ -28,7 +29,7 @@ class _ConnexionState extends State<Connexion> {
           style: TextStyle(
             color: Colors.black,
             fontWeight: FontWeight.bold,
-            fontSize: screenWith * 0.038,
+            fontSize: screenWith * 0.036,
           ),
         ),
         SizedBox(height: screenHeigth * 0.007),
@@ -65,7 +66,7 @@ class _ConnexionState extends State<Connexion> {
           style: TextStyle(
             color: Colors.black,
             fontWeight: FontWeight.bold,
-            fontSize: screenWith * 0.038,
+            fontSize: screenWith * 0.036,
           ),
         ),
         SizedBox(height: screenHeigth * 0.007),
@@ -110,13 +111,17 @@ class _ConnexionState extends State<Connexion> {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             TextButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.of(
+                  context,
+                ).push(MaterialPageRoute(builder: (_) => Forgotpasswordpage()));
+              },
               child: Text(
                 "Mot de passe oublié ?",
                 style: TextStyle(
                   color: AppColors.primary,
                   fontWeight: FontWeight.bold,
-                  fontSize: screenWith * 0.040,
+                  fontSize: screenWith * 0.038,
                 ),
               ),
             ),

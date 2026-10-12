@@ -240,7 +240,7 @@ class _ConnexionInscriptionPageState extends State<ConnexionInscriptionPage> {
                                     style: TextStyle(
                                       color: Colors.black,
                                       fontWeight: FontWeight.bold,
-                                      fontSize: screenWith * 0.042,
+                                      fontSize: screenWith * 0.040,
                                     ),
                                   ),
                                 ),
@@ -271,7 +271,7 @@ class _ConnexionInscriptionPageState extends State<ConnexionInscriptionPage> {
                                     style: TextStyle(
                                       color: Colors.black,
                                       fontWeight: FontWeight.bold,
-                                      fontSize: screenWith * 0.042,
+                                      fontSize: screenWith * 0.040,
                                     ),
                                   ),
                                 ),

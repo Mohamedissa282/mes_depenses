@@ -23,7 +23,7 @@ class _SettingPageState extends State<ProfilPage> {
   @override
   void initState() {
     super.initState();
-    choixNotification();
+    //choixNotification();
   }
 
   Future<void> choixNotification() async {
@@ -37,8 +37,7 @@ class _SettingPageState extends State<ProfilPage> {
     if (valeur) {
       await NotificationService.demanderPermission();
     }
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('notifs_budget', valeur);
+   
     setState(() {
       notificationsActives = valeur;
     });
@@ -244,7 +243,7 @@ class _SettingPageState extends State<ProfilPage> {
                     ),
                   ),
 
-                  const SizedBox(height: 20),
+                  SizedBox(height: 20),
 
                   // PRÉFÉRENCES
                   Text(
@@ -256,7 +255,7 @@ class _SettingPageState extends State<ProfilPage> {
                     ),
                   ),
 
-                  const SizedBox(height: 8),
+                  SizedBox(height: 8),
 
                   // CARTE DES PRÉFÉRENCES
                   Container(
@@ -281,7 +280,7 @@ class _SettingPageState extends State<ProfilPage> {
                               color: Color(0xFF0B6B5D),
                             ),
                           ),
-                          title:  Text(
+                          title: Text(
                             "Notifications",
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
@@ -301,6 +300,7 @@ class _SettingPageState extends State<ProfilPage> {
                             activeTrackColor: AppColors.primaryLight,
                             value: notificationsActives,
                             onChanged: (val) {
+                              
                               changerChoix(val);
                             },
                           ),
@@ -332,8 +332,10 @@ class _SettingPageState extends State<ProfilPage> {
                             onTap: () {
                               afficherChoixLangue();
                             },
-                            child: Text( langueProvider.local.languageCode == "fr" ?
-                              "Français" : "Anglais",
+                            child: Text(
+                              langueProvider.local.languageCode == "fr"
+                                  ? "Français"
+                                  : "Anglais",
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Colors.black,
@@ -346,7 +348,7 @@ class _SettingPageState extends State<ProfilPage> {
                     ),
                   ),
 
-                SizedBox(height: 24),
+                  SizedBox(height: 24),
 
                   // DÉCONNEXION
                   SizedBox(
@@ -385,7 +387,6 @@ class _SettingPageState extends State<ProfilPage> {
 
                   SizedBox(height: 40),
 
-                 
                   Center(
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 16),
