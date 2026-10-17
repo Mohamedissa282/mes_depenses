@@ -88,13 +88,13 @@ class _AceuilPageState extends State<AceuilPage> {
                       right: 20,
                       child: InkWell(
                         onTap: () async{
-                         final ok = await NotificationService.demanderPermission();
+                      /*   final ok = await NotificationService.demanderPermission();
     debugPrint("Permission accordée : $ok");
-    await NotificationService.showBudgetNotification();
-                          /*controller.nextPage(
+    await NotificationService.showBudgetNotification();*/
+                          controller.nextPage(
                             duration: Duration(microseconds: 300),
                             curve: Curves.decelerate,
-                          );*/
+                          );
                         },
                         child: Container(
                           height: 50,

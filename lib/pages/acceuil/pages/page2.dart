@@ -14,7 +14,7 @@ class Page2 extends StatelessWidget {
         children: [
           Lottie.asset("animation/animation1.json"),
           Text(
-            "Garde le contole de ton argent",
+            "Visualise où va ton argent",
             style: TextStyle(
               fontSize: 23,
               color: Colors.black,
@@ -23,7 +23,7 @@ class Page2 extends StatelessWidget {
           ),
           SizedBox(height: 5),
           Text(
-            "Note chaque dépense en quelques secondes et vois enfin ou par ton budget",
+            "Découvre tes habitudes de consommation grâce à des statistiques simples et des graphiques clairs.",
             style: TextStyle(
               fontSize: 14,
               color: Colors.grey,

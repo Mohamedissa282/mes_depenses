@@ -130,7 +130,7 @@ class _HistoriquePageState extends State<HistoriquePage> {
     }
   }
 
-  // 14.5 -> "14,50" ; 680 -> "680"
+
   String formatMontant(double v) {
     if (v == v.roundToDouble()) return v.toStringAsFixed(0);
     return v.toStringAsFixed(2).replaceAll('.', ',');
