@@ -129,7 +129,7 @@ class _SettingPageState extends State<ProfilPage> {
                 children: [
                   // "Profil"
                   Text(
-                    S.of(context).title1,
+                    "Profil",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: screenWith * 0.052,
