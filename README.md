@@ -29,7 +29,7 @@
 # Démonstration
 Cette vidéo présente la version actuelle de l'application.
 
- Vidéo YouTube : https://youtube.com/shorts/3N-AHa_qzh0
+ Vidéo YouTube : https://youtube.com/shorts/j7BnbQcGEMQ
 
 Pour découvrir l'application en détail, vous pouvez consulter la vidéo de démonstration ci-dessus. Vous trouverez également ci-dessous quelques captures d'écran présentant les principales interfaces de l'application.
 
