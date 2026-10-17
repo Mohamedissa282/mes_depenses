@@ -1,8 +1,6 @@
 # Mes Dépenses
- Application mobile Flutter permettant de gérer efficacement son budget personnel et de suivre ses dépenses mensuelles.
+ Application mobile conçue pour aider les utilisateurs à suivre leurs dépenses, respecter leur budget et mieux comprendre leurs habitudes financières en visualisant leur consommation grâce à des statistiques et des graphiques.
 
-# Description
- Mes Dépenses aide les utilisateurs à mieux gérer leurs finances en définissant un budget mensuel, en enregistrant leurs dépenses et en visualisant leur consommation grâce à des statistiques et des graphiques.
 
 # Fonctionnalités
 - Création et gestion d'un budget mensuel personnalisé
